@@ -9,5 +9,6 @@ void logo(void){
 }
 int main(void){
     logo();
+    return 0;
 }
 
