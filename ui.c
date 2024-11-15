@@ -2,14 +2,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include<unistd.h>
-
+#include "file_handler.h"
 
 #define CLEAR_SCREEN system("cls");
 
 #define MAX_ITEM_NAME_WIDTH  21
 #define MAX_ITEM_NO_WIDTH    8
 #define MAX_SPICE_WIDTH      10
-#define MAX_TYPE_WIDTH       8
+#define MAX_TYPE_WIDTH       11
 #define MAX_ALLERGEN_WIDTH   15
 #define MAX_PRICE_WIDTH      7
 
@@ -60,7 +60,7 @@ void print_wrapped_text(const char *text, int max_width, int line) {
     }
 }
 
-void menuRow(const char *item_name, const char *item_no, const char *spice, const char *type, const char *allergens, const char *price) {
+void menuRow(const char *item_name, const char *item_no, const char *spice, const char *type, const char *allergens, const char *price,int veg) {
     int max_lines = 0;
     max_lines = get_wrapped_lines(item_name, MAX_ITEM_NAME_WIDTH);
     if (get_wrapped_lines(item_no, MAX_ITEM_NO_WIDTH) > max_lines) max_lines = get_wrapped_lines(item_no, MAX_ITEM_NO_WIDTH);
@@ -70,42 +70,46 @@ void menuRow(const char *item_name, const char *item_no, const char *spice, cons
     if (get_wrapped_lines(price, MAX_PRICE_WIDTH) > max_lines) max_lines = get_wrapped_lines(price, MAX_PRICE_WIDTH);
     
     for (int line = 0; line < max_lines; line++) {
-        printf("| ");
+        if(veg==0)
+        printf("%s| \033[92m",BLUE);
+        if(veg==1)
+        printf("%s| \033[93m",BLUE);
+        if(veg==2)
+        printf("%s| %s",BLUE,RED);
+        
         print_wrapped_text(item_name, MAX_ITEM_NAME_WIDTH, line);
-        printf(" | ");
+        printf("%s | %s",BLUE,RESET);
         print_wrapped_text(item_no, MAX_ITEM_NO_WIDTH, line);
-        printf(" | ");
+        printf("%s | %s",BLUE,RESET);
         print_wrapped_text(spice, MAX_SPICE_WIDTH, line);
-        printf(" | ");
+        printf("%s | %s",BLUE,RESET);
         print_wrapped_text(type, MAX_TYPE_WIDTH, line);
-        printf(" | ");
+        printf("%s | %s",BLUE,RESET);
         print_wrapped_text(allergens, MAX_ALLERGEN_WIDTH, line);
-        printf(" | ");
+        printf("%s | %s",BLUE,RESET);
         print_wrapped_text(price, MAX_PRICE_WIDTH, line);
-        printf(" |\n");
+        printf("%s |\n%s",BLUE,RESET);
     }
 }
 
 void menuFooter(){
-    printf("+-----------------------+----------+------------+----------+-----------------+---------+\n");
+    printf("%s+-----------------------+----------+------------+-------------+-----------------+---------+\n%s",BLUE,RESET);
 }
 
 void menuLogo(){
-    printf(" __  __  ______  _   _  _    _ \n");
+    printf("%s __  __  ______  _   _  _    _ \n",BLINKING_YELLOW);
     printf("|  \\/  ||  ____|| \\ | || |  | |\n");
     printf("| \\  / || |__   |  \\| || |  | |\n");
     printf("| |\\/| ||  __|  | . ` || |  | |\n");
     printf("| |  | || |____ | |\\  || |__| |\n");
-    printf("|_|  |_||______||_| \\_| \\____/ \n");
+    printf("|_|  |_||______||_| \\_| \\____/ \n%s",RESET);
 }
-
-
 
 void menuHeader(){
  
-    printf("+-----------------------+----------+------------+----------+-----------------+---------+\n");
-    printf("|       Item Name       |  Item No |   Spice    |   Type   |   Allergen(s)   | Price   |\n");
-    printf("+-----------------------+----------+------------+----------+-----------------+---------+\n");
+    printf("%s+-----------------------+----------+------------+-------------+-----------------+---------+\n",BLUE);
+    printf("|       Item Name       |  Item No |   Spice    |     Type    |   Allergen(s)   | Price   |\n");
+    printf("+-----------------------+----------+------------+-------------+-----------------+---------+\n%s",RESET);
           
 }
 
@@ -159,7 +163,6 @@ void StartupPage() {
     LoginPage();
 }
 
-
 void LoginPage() {
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
@@ -176,10 +179,6 @@ void LoginPage() {
     printf("********************************************************\n");
     printf("\n \033[0m");
 }
-
-
-
-
 
 void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
     CLEAR_SCREEN;
@@ -247,7 +246,6 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
 
 }
 
-
 void ManagerLoginPage(char username[],char password[],int flag){
     CLEAR_SCREEN;
     printf("%s****************************************************\n",BLUE);
@@ -286,7 +284,6 @@ void ManagerLoginPage(char username[],char password[],int flag){
     }
 
 }
-
 
 void Customerloggedinpage(){
     printf("%s********************************************************\n",BLUE);
@@ -341,15 +338,9 @@ void ManagerLoggedinpage(){
 
 
 int main(){
-    
 
     CLEAR_SCREEN;
-
     StartupPage();
-    
-    
-   
-    
     int i;
     printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
     scanf("%d",&i);
@@ -371,20 +362,14 @@ int main(){
         while ((c = getchar()) != '\n');
         if(i==2){
             CLEAR_SCREEN
-            menuLogo();
-            menuHeader();
-            menuRow("Red Sauce Pasta","23094","9","Beverage","Nothing much","38.32");
-            menuRow("Lasagne alla Bolognese With Extra CHeese","23094","9","Beverage","Nothing much","38.32");
-            menuRow("Pizza Is good","23094","9","Beverage","Glutent Lactose Something Dsometihign something","38.32");
-            menuRow("Red Sauce Pasta","23094","9","Beverage","Nothing much","38.32");
-            menuFooter();
+            printMenu();
             printf("\n\n");
         }
         else{
             printf("NOTHING ELSE WORKS YET!");
         }      
     }
-    else {
+    else if(i==2) {
         
     char username[100];
     char password[100];
