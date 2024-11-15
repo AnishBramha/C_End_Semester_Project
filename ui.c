@@ -18,6 +18,8 @@ void LoginPage();
 #define BLUE "\033[96m"
 #define RED "\033[91m"
 #define YELLOW "\033[33m"
+#define BLINKING_YELLOW "\033[93m"
+#define RESET "\033[0m"
 
 
 
@@ -213,7 +215,7 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
     scanf("%d",persons);
-    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s",YELLOW,RED);
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s %s",BLINKING_YELLOW,RESET,RED);
     int choice;
     scanf("%d",&choice);
     
@@ -248,15 +250,15 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
 
 void ManagerLoginPage(char username[],char password[],int flag){
     CLEAR_SCREEN;
-    printf("****************************************************\n");
+    printf("%s****************************************************\n",BLUE);
     printf("*                                                  *\n");
-    printf("*                Manager Login Page                *\n");
+    printf("*                %sManager Login Page                %s*\n",RED,BLUE);
     printf("*                                                  *\n");
-    printf("*     Please provide the following details:        *\n");
+    printf("*     %sPlease provide the following details:        %s*\n",RED,BLUE);
     
     if(flag==1){
         
-        printf("*              Enter Correct Detials               *\n");
+        printf("*              %sEnter Correct Detials               %s*\n",RED,BLUE);
     }
     printf("*                                                  *\n");
     printf("****************************************************\n");
@@ -264,18 +266,18 @@ void ManagerLoginPage(char username[],char password[],int flag){
     printf("*                                                  *\n");
     printf("*                                                  *\n");
     printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*   Username : ");
+    printf("****************************************************\033[F\033[F*  %s Username : %s",YELLOW,RED);
   
     scanf("%[^\n]",username);
     int c;
     while ((c = getchar()) != '\n');
-    printf("\n\n*                                                  *\n");
+    printf("\n\n%s*                                                  *\n",BLUE);
     printf("*                                                  *\n");
     printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*   Password : ");
+    printf("****************************************************\033[F\033[F*  %s Password : %s",YELLOW,RED);
     scanf("%[^\n]",password);
     
-    printf("\n\n\n Enter 1 to confirm Details , 0 to Re-enter : ");
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s",BLINKING_YELLOW,RESET);
     int choice;
     scanf("%d",&choice);
     while ((c = getchar()) != '\n');
@@ -313,23 +315,23 @@ void Customerloggedinpage(){
 void ManagerLoggedinpage(){
     
     CLEAR_SCREEN;
-    printf("********************************************************\n");
+    printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
-    printf("*                  Welcome, Dear Manager               *\n");
+    printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
     printf("*                                                      *\n");
-    printf("*    Please select an option from the menu below:      *\n");
+    printf("*    %sPlease select an option from the menu below:      %s*\n",RED,BLUE);
     printf("*                                                      *\n");
-    printf("*     ____________________      ____________________   *\n");
-    printf("*    |                    |    |                    |  *\n");
-    printf("*    |  1. Manage Tables  |    |  2. Manage Menu    |  *\n");
-    printf("*    |____________________|    |____________________|  *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|  1. Manage Tables  |    |  2. Manage Menu    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
     printf("*                                                      *\n");
-    printf("*     ____________________      ____________________   *\n");
-    printf("*    |                    |    |                    |  *\n");
-    printf("*    |  3. Manage Orders  |    |  4. Sales Analysis |  *\n");
-    printf("*    |____________________|    |____________________|  *\n");
-    printf("*                                                      *\n");
-    printf("*           Press 5 to Go Back to the Login Page       *\n");
+    printf("*    %s ____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|  3. Manage Orders  |    |  4. Sales Analysis |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      %s*\n",BLUE);
+    printf("*           %sPress 5 to Go Back to the Login Page       %s*\n",RED,BLUE);
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n");
@@ -349,7 +351,7 @@ int main(){
    
     
     int i;
-    printf("%s Your Choice : %s",RED,YELLOW);
+    printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
     scanf("%d",&i);
     printf("\033[0m");
     int c;
@@ -363,6 +365,7 @@ int main(){
         CLEAR_SCREEN;
         Customerloggedinpage();
         int i;
+        printf("%s Your Choice : %s%s",BLINKING_YELLOW,RESET,RED);
         scanf("%d",&i);
         int c;
         while ((c = getchar()) != '\n');
