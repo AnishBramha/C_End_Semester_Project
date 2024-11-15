@@ -15,6 +15,10 @@
 
 void LoginPage();
 
+#define BLUE "\033[96m"
+#define RED "\033[91m"
+#define YELLOW "\033[33m"
+
 
 
 
@@ -104,27 +108,28 @@ void menuHeader(){
 }
 
 
+
 // ===============================================================================================================
 
 
 void StartupPage() {
     CLEAR_SCREEN;
     
-    printf("***************************************************\n");
+    printf("\033[96m***************************************************\n");
     printf("*                                                 *\n");
-    printf("*    ____     ____            _   _               *\n");
-    printf("*   / ___|   / ___|  ___  ___| |_(_) ___  _ __    *\n");
-    printf("*  | |   ____\\___ \\ / _ \\/ __| __| |/ _ \\| '_ \\   *\n");
-    printf("*  | |__|_____|__) |  __/ (__| |_| | (_) | | | |  *\n");
-    printf("*   \\____|   |____/ \\___|\\___|\\__|_|\\___/|_| |_|  *\n");
+    printf("* \033[33m   ____     ____            _   _              \033[96m *\n");
+    printf("* \033[33m  / ___|   / ___|  ___  ___| |_(_) ___  _ __    \033[96m*\n");
+    printf("* \033[33m | |   ____\\___ \\ / _ \\/ __| __| |/ _ \\| '_ \\   \033[96m*\n");
+    printf("* \033[33m | |__|_____|__) |  __/ (__| |_| | (_) | | | |  \033[96m*\n");
+    printf("* \033[33m  \\____|   |____/ \\___|\\___|\\__|_|\\___/|_| |_|  \033[96m*\n");
     printf("*                                                 *\n");
-    printf("*                Made by C Section                *\n");
+    printf("*           \033[91m     Made by C Section    \033[96m            *\n");
     printf("*                                                 *\n");
     printf("***************************************************\n");
     printf("\n");
 
  
-    printf("  Loading...\n");
+    printf(" \033[91m   Loading...\n \033[33m");
 
     for (int i = 0; i <= 20; i++) {
    
@@ -147,27 +152,27 @@ void StartupPage() {
         usleep(100000);  
     }
 
-    printf("\n\n");  
+    printf("\n\n\033[0m ");  
     CLEAR_SCREEN
     LoginPage();
 }
 
 
 void LoginPage() {
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*               %s Welcome to Taj Hotel                %s  *\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*                                                      *\n");
+    printf("*   %s  ____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*   %s |                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*   %s |      CUSTOMER      |    |      MANAGER       |  %s*\n",YELLOW,BLUE);
+    printf("*   %s |____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      %s*\n",BLUE);
+    printf("*   %s  Press 1 for Customer      Press 2 for Manager   %s *\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
     printf("********************************************************\n");
-    printf("*                                                      *\n");
-    printf("*                Welcome to Taj Hotel                  *\n");
-    printf("*                                                      *\n");
-    printf("*                                                      *\n");
-    printf("*     ____________________      ____________________   *\n");
-    printf("*    |                    |    |                    |  *\n");
-    printf("*    |      CUSTOMER      |    |      MANAGER       |  *\n");
-    printf("*    |____________________|    |____________________|  *\n");
-    printf("*                                                      *\n");
-    printf("*     Press 1 for Customer      Press 2 for Manager    *\n");
-    printf("*                                                      *\n");
-    printf("********************************************************\n");
-    printf("\n");
+    printf("\n \033[0m");
 }
 
 
@@ -176,15 +181,15 @@ void LoginPage() {
 
 void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
     CLEAR_SCREEN;
-    printf("****************************************************\n");
+    printf("%s****************************************************\n",BLUE);
     printf("*                                                  *\n");
-    printf("*              Customer Details Page               *\n");
+    printf("*              %sCustomer Details Page%s               *\n",YELLOW,BLUE);
     printf("*                                                  *\n");
-    printf("*     Please provide the following details:        *\n");
+    printf("*     %sPlease provide the following details:%s        *\n",YELLOW,BLUE);
     
     if(flag==1){
         
-        printf("*              Enter Correct Detials               *\n");
+        printf("*              %sEnter Correct Detials%s               *\n",RED,BLUE);
     }
     printf("*                                                  *\n");
     printf("****************************************************\n");
@@ -192,23 +197,23 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
     printf("*                                                  *\n");
     printf("*                                                  *\n");
     printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*   Name: ");
+    printf("****************************************************\033[F\033[F*  %s Name: %s ",YELLOW,RED);
   
     scanf("%[^\n]",name);
     
-    printf("\n\n*                                                  *\n");
+    printf("\n\n%s*                                                  *\n",BLUE);
     printf("*                                                  *\n");
     printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*   Phone Number: ");
+    printf("****************************************************\033[F\033[F*  %s Phone Number: %s",YELLOW,RED);
     scanf("%s",phone);
-    printf("\n\n*                                                  *\n");    
+    printf("\n\n%s*                                                  *\n",BLUE);    
     printf("*                                                  *\n");
     printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*   Total Person: ");
+    printf("****************************************************\033[F\033[F*  %s Total Person: %s",YELLOW,RED);
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
     scanf("%d",persons);
-    printf("\n\n\n Enter 1 to confirm Details , 0 to Re-enter : ");
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s",YELLOW,RED);
     int choice;
     scanf("%d",&choice);
     
@@ -282,28 +287,55 @@ void ManagerLoginPage(char username[],char password[],int flag){
 
 
 void Customerloggedinpage(){
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*                  %sWelcome to Taj Hotel                %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*    %sPlease select an option from the menu below:      %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|  1. Reserve Table  |    |    2. View Menu    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|  3. Order Dishes   |    |  4. Retrieve Bill  |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("*           %sPress 5 to Go Back to the Login Page       %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    printf("\n");
+
+}
+
+void ManagerLoggedinpage(){
+    
+    CLEAR_SCREEN;
     printf("********************************************************\n");
     printf("*                                                      *\n");
-    printf("*                  Welcome to Taj Hotel                *\n");
+    printf("*                  Welcome, Dear Manager               *\n");
     printf("*                                                      *\n");
     printf("*    Please select an option from the menu below:      *\n");
     printf("*                                                      *\n");
     printf("*     ____________________      ____________________   *\n");
     printf("*    |                    |    |                    |  *\n");
-    printf("*    |  1. Reserve Table  |    |    2. View Menu    |  *\n");
+    printf("*    |  1. Manage Tables  |    |  2. Manage Menu    |  *\n");
     printf("*    |____________________|    |____________________|  *\n");
     printf("*                                                      *\n");
     printf("*     ____________________      ____________________   *\n");
     printf("*    |                    |    |                    |  *\n");
-    printf("*    |  3. Order Dishes   |    |  4. Retrieve Bill  |  *\n");
+    printf("*    |  3. Manage Orders  |    |  4. Sales Analysis |  *\n");
     printf("*    |____________________|    |____________________|  *\n");
     printf("*                                                      *\n");
     printf("*           Press 5 to Go Back to the Login Page       *\n");
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n");
-
 }
+
+
 
 
 int main(){
@@ -317,7 +349,9 @@ int main(){
    
     
     int i;
+    printf("%s Your Choice : %s",RED,YELLOW);
     scanf("%d",&i);
+    printf("\033[0m");
     int c;
     while ((c = getchar()) != '\n');
     if(i==1){
@@ -327,9 +361,6 @@ int main(){
         int persons;
         CustomerDetailsPage(name,phone,&persons,0);
         CLEAR_SCREEN;
-        printf("Customer Name: %s\n",name);
-        printf("Customer Phone: %s\n",phone);
-        printf("Total Persons: %d\n",persons);
         Customerloggedinpage();
         int i;
         scanf("%d",&i);
@@ -357,6 +388,7 @@ int main(){
     ManagerLoginPage(username,password,0);
     printf("%s\n",username);
     printf("%s",password);
+    ManagerLoggedinpage();
         
     }
 
