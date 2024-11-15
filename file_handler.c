@@ -1,5 +1,9 @@
 #include<stdio.h>
 #include<string.h>
+#include "ui.h"
+#include<stdlib.h>
+#define CLEAR_SCREEN system("cls");
+
 int addMenuItem(char name[],float price,char allergens[],int type, int spice, int veg_nonveg ){
 
     if(type!=1&&type!=2&&type!=3 && type!=4){
@@ -60,16 +64,91 @@ int addMenuItem(char name[],float price,char allergens[],int type, int spice, in
     return 0;
 }
 
-
-
-
-
-int main (){
-    char name[]="Red Sauce Pasta";
-    float price=149.99;
-    char allergens[]="Lactose Gluten";
-
-    addMenuItem(name,price,allergens,1,3,2);
-    return 0;
+void printMenu(){
+    CLEAR_SCREEN
+            menuLogo();
+            menuHeader();
+ FILE *f;
+    f=  fopen("menu.csv","r+");
+    int counter=0;
+    long long int id=0;
+    char name[100];
+    char price[20];
+    char allergens[100];
+    int counter2=0;
+    int counter3=0;
+    int counter4=0;
+    int flag1=0;
+    while (1==1){
+        char c=fgetc(f);
+        if(c==EOF){break;}
+        if(c=='\n'){
+            char idArr[8];
+            for(int i=6;i>=0;i--){
+                idArr[i]=(char)((id%10)+48);
+                id=id/10;
+            }
+            idArr[7]='\0';
+            char spice[2]={idArr[1],'\0'};
+            int veg=idArr[2]-48;
+            
+            switch(idArr[0]){
+                case '1':
+                    menuRow(name,&idArr[3],spice,"Starter",allergens,price,veg);
+                    break;
+                case '2':
+                    menuRow(name,&idArr[3],spice,"Main Course",allergens,price,veg);
+                    break;
+                case '3':
+                    menuRow(name,&idArr[3],spice,"Dessert",allergens,price,veg);
+                    break;
+                case '4':
+                    menuRow(name,&idArr[3],spice,"Beverage",allergens,price,veg);
+                    break;    
+                    
+            }
+            memset(name, 0, sizeof(name));
+            memset(price, 0, sizeof(price));
+            memset(allergens, 0, sizeof(allergens));
+            allergens[counter3]='\0';
+            counter=0;counter2=0;counter3=0;flag1=0;id=0;counter4=0;
+            continue;
+        }
+        if(c==','){
+            counter++;
+            name[counter2]='\0';
+            price[counter4]='\0';
+            allergens[counter3]='\0';
+            continue;
+        }
+        if(c=='.'){flag1=1;}
+        switch(counter){
+            case 0:
+                id=id*10+(int)c-48;
+                break;
+            case 1:
+                name[counter2]=c;
+                counter2++;
+                break;
+            
+            case 2:
+                price[counter4]=c;
+                counter4++;
+                break;
+            case 3:
+                allergens[counter3]=c;
+                counter3++;
+                break;    
+        }
+       
+    }   
+    menuFooter();
 }
+
+
+
+// int main (){
+//     printMenu();
+//     return 0;
+// }
 
