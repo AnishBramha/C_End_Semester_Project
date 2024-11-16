@@ -1,8 +1,10 @@
 #include<stdio.h>
 #include<string.h>
 #include "ui.h"
+#include "linked_list.h"
 #include<stdlib.h>
-#define CLEAR_SCREEN system("cls");
+#define CLEAR_SCREEN system("clear");
+
 
 int addMenuItem(char name[],float price,char allergens[],int type, int spice, int veg_nonveg ){
 
@@ -143,6 +145,28 @@ void printMenu(){
        
     }   
     menuFooter();
+}
+
+
+void writeTable(NodeTable* head) {
+
+    FILE* fptr = fopen("tables.csv", "w");
+    if (!fptr) {
+
+        fprintf(stderr, "\n\aFATAL ERROR! FILE NOT FOUND!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    NodeTable* temp = head;
+
+    for (int i = 0; i < lenTable(head); i++) {
+
+        fprintf(fptr, "%d,%d,%d\n", temp->table.number, temp->table.capacity, temp->table.available);
+        temp = temp->next;
+    }
+
+    fclose(fptr);
+    return;
 }
 
 
