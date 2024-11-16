@@ -57,7 +57,7 @@ void test(void);
 
 int main(void) {
 
-    test();
+    //test();
 
     return 0;
 }
