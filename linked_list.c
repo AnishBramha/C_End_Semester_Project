@@ -53,7 +53,8 @@ void __str__(Node*);
 
 
 
-void test(void);
+void test(void); // use for testing purposes only
+void format(Node*);
 
 int main(void) {
 
