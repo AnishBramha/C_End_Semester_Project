@@ -3,64 +3,103 @@
 
 #define VAR_DECLS
 
-#include<stdio.h>
-#include<stddef.h>
-#include<stdbool.h>
-#include<stdlib.h>
-#include<string.h>
+// ********************************************************
+typedef struct Item {
 
-#define STR_INDEX_ERR fprintf(stderr, "\a\nFATAL ERROR! INVALID INDEX!\n")
-#define STR_MEM_ERR fprintf(stderr, "\a\nFATAL ERROR! ALLOCATION FAILED!\n")
-#define STR_EMPTY_LIST_ERR fprintf(stderr, "\a\nFATAL ERROR! EMPTY LIST!\n")
-
-#undef malloc
-
-void* alloc(size_t size);
-
-typedef struct {
-
-    char itemID[7];
+    long long int itemID;
     char name[100];
     float price;
-    char allergens[100];
+    char allergens[1024];
+
+} Item;
+
+typedef struct Menu {
+
+    Item item;
+    struct Menu* next;
 
 } Menu;
 
-typedef struct {
+Menu* newItem(Item* item);
+Menu* addItem(Menu* item, Menu* menu);
+Menu* removeItem(long long int itemID, Menu* menu);
+void deleteMenu(Menu* menu);
 
-    int number;
-    int capacity;
+int lenMenu(Menu* menu);
+
+void formatMenu(Menu* menu); // USE FOR DEBUGGING PURPOSES ONLY
+// *********************************************************
+
+// *********************************************************
+typedef struct Table {
+
+    long int tableNo;
+    long int capacity;
     int available;
- 
+
 } Table;
 
-typedef struct NodeMenu {
-
-    Menu item;
-    struct NodeMenu* next;
-
-} NodeMenu;
-
-typedef struct NodeTable {
+typedef struct Tables {
 
     Table table;
-    struct NodeTable* next;
+    struct Tables* next;
 
-} NodeTable;
+} Tables;
 
-NodeMenu* __newItem__(Menu*);
-NodeTable* __new__Table(Table*);
-void __delMenu__(NodeMenu*);
-void __delTable__(NodeTable*);
+Tables* newTable(Table* table);
+Tables* addTable(Tables* table, Tables* tables);
+Tables* removeTable(long int tableNo, Tables* tables);
+void deleteTables(Tables* tables);
 
-NodeMenu* pushItem(int, NodeMenu*, NodeMenu*);
-NodeMenu* popItem(int, NodeMenu*);
-NodeTable* pushTable(int, NodeTable*, NodeTable*);
-NodeTable* popTable(int, NodeTable*);
+int lenTables(Tables* tables);
 
-int lenMenu(NodeMenu*);
-int lenTable(NodeTable*);
-void __strMenu__(NodeMenu*);
-void __strTable__(NodeTable*);
+void formatTables(Tables* tables); // USE FOR DEBUGGING PURPOSES ONLY
+// ***********************************************************
+
+// ***********************************************************
+typedef struct Order {
+
+    long int orderID;
+    char name[100];
+    char phone[11];
+    int people;
+    long int tableNo;
+    long long int itemIDs[100];
+    char orderTime[6]; // HH:MM (24-hr format)
+    char orderDate[9]; // DD:MM:YY
+    float amount;
+
+} Order;
+
+typedef struct CurrentOrders {
+
+    Order order;
+    struct CurrentOrders* next;
+
+} CurrentOrders;
+
+typedef struct OrderHistory {
+
+    Order order;
+    struct OrderHistory* next;
+
+} OrderHistory;
+
+CurrentOrders* newOrder(Order* order);
+CurrentOrders* addOrder(CurrentOrders* currentOrder, CurrentOrders* currentOrders);
+CurrentOrders* removeOrder(long int orderID, CurrentOrders* currentOrders);
+void deleteCurrentOrders(CurrentOrders* currentOrders);
+
+int lenCurrentOrders(CurrentOrders* currentOrders); // USE FOR DEBUGGING PURPOSES ONLY
+
+OrderHistory* newEntry(Order* order);
+OrderHistory* addEntry(OrderHistory* currentEntry, OrderHistory* orderHistory);
+void deleteOrderHistory(OrderHistory* orderHistory);
+
+int lenOrderHistory(OrderHistory* orderHistory); // USE FOR DEBUGGING PURPOSES ONLY
+
+void formatCurrentOrders(CurrentOrders* currentOrders);
+void formatOrderHistory(OrderHistory* orderHistory);
+// ************************************************************
 
 #endif
