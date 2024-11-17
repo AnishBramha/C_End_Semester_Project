@@ -1,4 +1,5 @@
-
+#ifndef UI_H
+#define UI_H
 #define CLEAR_SCREEN system("cls");
 
 // Constants for menu layout
@@ -30,3 +31,5 @@ void menuFooter(void);
 void menuRow(const char *item_name, const char *item_no, const char *spice, const char *type, const char *allergens, const char *price,int veg);
 int get_wrapped_lines(const char *text, int max_width);
 void print_wrapped_text(const char *text, int max_width, int line);
+
+#endif
