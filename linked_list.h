@@ -1,8 +1,6 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#define VAR_DECLS
-
 // ********************************************************
 typedef struct Item {
 
@@ -92,6 +90,9 @@ int lenOrderHistory(OrderHistory* orderHistory);
 // ************************************************************
 
 // ************************************************************
+
+char* getTime(void);
+char* getDate(void);
 
 // USE FOR DEBUGGING PURPOSES ONLY
 // ===============================
