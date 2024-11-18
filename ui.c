@@ -311,7 +311,7 @@ void Customerloggedinpage(){
 
 void ManagerLoggedinpage(){
     
-    CLEAR_SCREEN;
+    // CLEAR_SCREEN;
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
@@ -334,51 +334,111 @@ void ManagerLoggedinpage(){
     printf("\n");
 }
 
+void ManageMenuPage(){
+    // CLEAR_SCREEN;
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*    %sPlease select an option from the menu below:      %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|    1. Add Item     |    |  2. Remove Item    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("*                %s ____________________                 %s*\n",YELLOW,BLUE);
+    printf("*                %s|                    |                %s*\n",YELLOW,BLUE);
+    printf("*                %s|  3. Update Price   |                %s*\n",YELLOW,BLUE);
+    printf("*                %s|____________________|                %s*\n",YELLOW,BLUE);
+    printf("*                                                      %s*\n",BLUE);
+    printf("*                  %sPress 5 to Go Back                  %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    printf("\n");
+   
+}
+
+void ManageTablesPage(){
+    // CLEAR_SCREEN;
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*    %sPlease select an option from the menu below:      %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|    1. Add Table    |    |  2. Remove Table   |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("*                                                      %s*\n",BLUE);
+    printf("*                  %sPress 5 to Go Back                  %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    printf("\n");
+   
+}
+
+
+
 
 
 
 int main(){
 
-    CLEAR_SCREEN;
-    StartupPage();
-    int i;
-    printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
-    scanf("%d",&i);
-    printf("\033[0m");
-    int c;
-    while ((c = getchar()) != '\n');
-    if(i==1){
-        CLEAR_SCREEN;
-        char name[100];
-        char phone[10];
-        int persons;
-        CustomerDetailsPage(name,phone,&persons,0);
-        CLEAR_SCREEN;
-        Customerloggedinpage();
-        int i;
-        printf("%s Your Choice : %s%s",BLINKING_YELLOW,RESET,RED);
-        scanf("%d",&i);
-        int c;
-        while ((c = getchar()) != '\n');
-        if(i==2){
-            CLEAR_SCREEN
-            printMenu();
-            printf("\n\n");
-        }
-        else{
-            printf("NOTHING ELSE WORKS YET!");
-        }      
-    }
-    else if(i==2) {
-        
-    char username[100];
-    char password[100];
-    ManagerLoginPage(username,password,0);
-    printf("%s\n",username);
-    printf("%s",password);
+    // CLEAR_SCREEN;
+    // StartupPage();
+    // int i;
+    // printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
+    // scanf("%d",&i);
+    // printf("\033[0m");
+    // int c;
+    // while ((c = getchar()) != '\n');
+    // if(i==1){
+    //     CLEAR_SCREEN;
+    //     char name[100];
+    //     char phone[10];
+    //     int persons;
+    //     CustomerDetailsPage(name,phone,&persons,0);
+    //     CLEAR_SCREEN;
+    //     Customerloggedinpage();
+    //     int i;
+    //     printf("%s Your Choice : %s%s",BLINKING_YELLOW,RESET,RED);
+    //     scanf("%d",&i);
+    //     int c;
+    //     while ((c = getchar()) != '\n');
+    //     if(i==2){
+    //         CLEAR_SCREEN
+    //         printMenu();
+    //         printf("\n\n");
+    //     }
+    //     else{
+    //         printf("NOTHING ELSE WORKS YET!");
+    //     }      
+    // }
+    // else if(i==2) {
+            
+    //     char username[100];
+    //     char password[100];
+    //     ManagerLoginPage(username,password,0);
+    //     printf("%s\n",username);
+    //     printf("%s",password);
+    //     ManagerLoggedinPageGOTO:
+    //     ManagerLoggedinpage();
+    //     int ch=0;
+    //     scanf("%d",&ch);
+    //     if(ch==1){
+
+    //     }
+    //     else if(ch==2){
+            
+    //     }
+    // }
+    CLEAR_SCREEN
     ManagerLoggedinpage();
-        
-    }
+    ManageTablesPage();
+    ManageMenuPage();
 
         
 
