@@ -24,10 +24,7 @@ Menu* newItem(Item* item);
 Menu* addItem(Menu* item, Menu* menu);
 Menu* removeItem(long long int itemID, Menu* menu);
 void deleteMenu(Menu* menu);
-
 int lenMenu(Menu* menu);
-
-void formatMenu(Menu* menu); // USE FOR DEBUGGING PURPOSES ONLY
 // *********************************************************
 
 // *********************************************************
@@ -50,10 +47,7 @@ Tables* newTable(Table* table);
 Tables* addTable(Tables* table, Tables* tables);
 Tables* removeTable(long int tableNo, Tables* tables);
 void deleteTables(Tables* tables);
-
 int lenTables(Tables* tables);
-
-void formatTables(Tables* tables); // USE FOR DEBUGGING PURPOSES ONLY
 // ***********************************************************
 
 // ***********************************************************
@@ -89,17 +83,27 @@ CurrentOrders* newOrder(Order* order);
 CurrentOrders* addOrder(CurrentOrders* currentOrder, CurrentOrders* currentOrders);
 CurrentOrders* removeOrder(long int orderID, CurrentOrders* currentOrders);
 void deleteCurrentOrders(CurrentOrders* currentOrders);
-
-int lenCurrentOrders(CurrentOrders* currentOrders); // USE FOR DEBUGGING PURPOSES ONLY
+int lenCurrentOrders(CurrentOrders* currentOrders);
 
 OrderHistory* newEntry(Order* order);
 OrderHistory* addEntry(OrderHistory* currentEntry, OrderHistory* orderHistory);
 void deleteOrderHistory(OrderHistory* orderHistory);
+int lenOrderHistory(OrderHistory* orderHistory); 
+// ************************************************************
 
-int lenOrderHistory(OrderHistory* orderHistory); // USE FOR DEBUGGING PURPOSES ONLY
+// ************************************************************
 
+// USE FOR DEBUGGING PURPOSES ONLY
+// ===============================
+
+void formatMenu(Menu* menu);
+void formatTables(Tables* tables);
 void formatCurrentOrders(CurrentOrders* currentOrders);
 void formatOrderHistory(OrderHistory* orderHistory);
-// ************************************************************
+
+void testMenu(void);
+void testTable(void);
+void testCurrentOrders(void);
+void testOrderHistory(void);
 
 #endif
