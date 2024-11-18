@@ -91,8 +91,8 @@ int lenOrderHistory(OrderHistory* orderHistory);
 
 // ************************************************************
 
-char* getTime(void);
-char* getDate(void);
+char* getTime(void); // HH:MM (24-hr format)
+char* getDate(void); // DD:MM:YY
 
 // USE FOR DEBUGGING PURPOSES ONLY
 // ===============================
