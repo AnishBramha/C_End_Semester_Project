@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include<unistd.h>
-#include "file_handler.h"
+// #include "file_handler.h"
 
 #define CLEAR_SCREEN system("cls");
 
@@ -12,6 +12,9 @@
 #define MAX_TYPE_WIDTH       11
 #define MAX_ALLERGEN_WIDTH   15
 #define MAX_PRICE_WIDTH      7
+
+#define DAYS 30
+#define HEIGHT 25
 
 void LoginPage();
 
@@ -382,6 +385,66 @@ void ManageTablesPage(){
 
 
 
+// ===============================================================================================================
+// GRAPH TOOLS
+
+
+
+int findMax(int revenue[], int size) {
+    int max = revenue[0];
+    for (int i = 1; i < size; i++) {
+        if (revenue[i] > max) {
+            max = revenue[i];
+        }
+    }
+    return max;
+}
+
+void drawBarGraph(int revenue[], int size) {
+    printf("\n");
+    int maxRevenue = findMax(revenue, size);
+
+    float scale = (float)HEIGHT / maxRevenue;
+ 
+
+    // main data frame and y axis.
+    for (int i = HEIGHT; i > 0; i--) {
+
+        if (i % 5 == 0) {
+            printf("%s%4d %s|%s",RED ,(int)(i * maxRevenue / HEIGHT),BLUE,BLINKING_YELLOW); 
+        } else {
+            printf("%s     |%s",BLUE,BLINKING_YELLOW);
+        }
+
+        for (int j = 0; j < size; j++) {
+            if ((int)(revenue[j] * scale) >= i) {
+                printf(" * "); 
+            } else {
+                printf("   "); 
+            }
+        }
+        printf("\n");
+    }
+
+    // X axis
+    printf("%s     +",BLUE);
+    for (int j = 0; j < size; j++) {
+        printf("---");
+    }
+    printf("\n");   
+    printf("      %s",RED);
+    for (int j = 0; j < size; j++) {
+        printf("%2d ", size - j); 
+    }
+    printf("\n");
+    printf("%s               1 Represents Today, 2 Represents Yesterday and so on for last 30 days.                       %s",YELLOW,RESET);
+    printf("\n\n");
+}
+
+
+
+// ===============================================================================================================
+
 
 
 
@@ -436,11 +499,19 @@ int main(){
     //     }
     // }
     CLEAR_SCREEN
-    ManagerLoggedinpage();
-    ManageTablesPage();
-    ManageMenuPage();
+    // ManagerLoggedinpage();
+    // ManageTablesPage();
+    // ManageMenuPage();
 
-        
+
+
+     int revenue[30] = {
+        120, 80, 150, 200, 250, 300, 350, 400, 320, 280,
+        220, 180, 140, 100, 60, 50, 340, 130, 240, 100,
+        250, 100, 150, 200, 250, 300, 350, 400, 450, 700
+    };
+
+    drawBarGraph(revenue, 30);
 
     return 0;
 }
