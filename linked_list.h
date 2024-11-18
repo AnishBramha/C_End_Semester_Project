@@ -102,7 +102,7 @@ void formatCurrentOrders(CurrentOrders* currentOrders);
 void formatOrderHistory(OrderHistory* orderHistory);
 
 void testMenu(void);
-void testTable(void);
+void testTables(void);
 void testCurrentOrders(void);
 void testOrderHistory(void);
 
