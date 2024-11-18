@@ -1,375 +1,682 @@
-#include<stdio.h>
-#include<stddef.h>
-#include<stdbool.h>
-#include<stdlib.h>
-#include<string.h>
-#include "file_handler.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+#include <time.h>
+#include "linked_list.h"
 
-#define STR_INDEX_ERR fprintf(stderr, "\a\nFATAL ERROR! INVALID INDEX!\n")
-#define STR_MEM_ERR fprintf(stderr, "\a\nFATAL ERROR! ALLOCATION FAILED!\n")
-#define STR_EMPTY_LIST_ERR fprintf(stderr, "\a\nFATAL ERROR! EMPTY LIST!\n")
+#define ALLOC_FAILED -1
+#define EMPTY_LIST -4
+
+#define STR_ALLOC_FAILED fprintf(stderr, "\a\nFATAL ERROR! MEMORY ALLOCATION FAILED!\n\n")
+#define STR_EMPTY_LIST fprintf(stderr, "\a\nFATAL ERROR! EMPTY LIST!\n\n")
+#define STR_INVALID_INDEX fprintf(stderr, "\a\nFATAL ERROR! INVALID INDEX!\n\n")
 
 #undef malloc
-void* alloc(size_t size) {
+
+static void* alloc(size_t size) {
 
     void* mem = malloc(size);
     if (!mem) {
-        STR_MEM_ERR;
-        exit(EXIT_FAILURE);
+
+        STR_ALLOC_FAILED;
+        exit(ALLOC_FAILED);
     }
 
     return mem;
 }
 
+void formatLine(void) {
 
-
-NodeMenu* __newItem__(Menu*);
-NodeTable* __new__Table(Table*);
-void __delMenu__(NodeMenu*);
-void __delTable__(NodeTable*);
-
-NodeMenu* pushItem(int, NodeMenu*, NodeMenu*);
-NodeMenu* popItem(int, NodeMenu*);
-NodeTable* pushTable(int, NodeTable*, NodeTable*);
-NodeTable* popTable(int, NodeTable*);
-
-int lenMenu(NodeMenu*);
-int lenTable(NodeTable*);
-void __strMenu__(NodeMenu*);
-void __strTable__(NodeTable*);
-
-
-
-
-
-
-
-
-
-
-void testMenu(void); // use for testing purposes only
-void testTable(void); // use for testing purposes only
-void formatItem(NodeMenu*);
-void formatTable(NodeTable*);
+    puts("=====================================");
+}
 
 // int main(void) {
 
-//     //testMenu();
-//     //testTable();
+//     // testMenu();
+//     // testTables();
+//     //testCurrentOrders();
+//     // testOrderHistory();
 
 //     return 0;
 // }
 
+char* getTime(void) {
+
+    time_t t = time(NULL);
+    struct tm* ctime = localtime(&t);
+
+    static char strtime[6];
+    snprintf(strtime, sizeof(strtime), "%-02d:%02d", ctime->tm_hour, ctime->tm_min);
+
+    return strtime;
+}
+
+char* getDate(void) {
+
+    time_t t = time(NULL);
+    struct tm* ctime = localtime(&t);
+
+    static char strdate[9];
+    snprintf(strdate, sizeof(strdate), "%02d-%02d-%02d", ctime->tm_mday, ctime->tm_mon + 1, ctime->tm_year % 100);
+
+    return strdate;
+}
 
 
 
+// ************************************************
 
+Menu* newItem(Item* item) {
 
+    Menu* node = (Menu*)alloc(sizeof(Menu));
 
+    node->item.itemID = item->itemID;
+    strncpy(node->item.name, item->name, sizeof(node->item.name));
+    node->item.price = item->price;
+    strncpy(node->item.allergens, item->allergens, sizeof(node->item.allergens));
 
-
-
-
-
-NodeMenu* __newItem__(Menu* item) {
-
-    NodeMenu* node = (NodeMenu*)alloc(sizeof(NodeMenu));
-
-    node->item = *item;
     node->next = NULL;
 
     return node;
 }
 
-NodeTable* __newTable__(Table* table) {
+Menu* addItem(Menu* item, Menu* menu) {
 
-    NodeTable* node = (NodeTable*)alloc(sizeof(NodeTable));
+    if (!menu)
+        return item;
 
-    node->table = *table;
-    node->next = NULL;
+    Menu* temp = menu;
+    while (temp->next)
+        temp = temp->next;
+
+    temp->next = item;
+    return menu;
 }
 
-void __delMenu__(NodeMenu* head) {
+Menu* removeItem(long long int itemID, Menu* menu) {
 
-    while (head) {
+    if (!menu) {
 
-        NodeMenu* temp = head;
-        head = head->next;
-        free(temp);
+        STR_EMPTY_LIST;
+        exit(EMPTY_LIST);
+    }
+
+    if (menu->item.itemID == itemID) {
+
+        Menu* itemToRemove = menu;
+        menu = menu->next;
+
+        free(itemToRemove);
+        return menu;
+    }
+
+    Menu* temp = menu;
+    while (temp->next && temp->next->item.itemID != itemID)
+        temp = temp->next;
+
+    if (!temp->next) {
+
+        STR_INVALID_INDEX;
+        return menu;
+    }
+
+    Menu* itemToRemove = temp->next;
+    temp->next = temp->next->next;
+    
+    free(itemToRemove);
+    return menu;
+}
+
+void deleteMenu(Menu* menu) {
+
+    if (!menu)
+        return;
+
+    Menu* temp = menu;
+    while (temp) {
+
+        Menu* itemToDelete = temp;
+        temp = temp->next;
+        free(itemToDelete);
     }
 
     return;
 }
 
-int lenMenu(NodeMenu* head) {
+int lenMenu(Menu* menu) {
 
-    int size = 0;
-    NodeMenu* temp = head;
-
+    Menu* temp = menu;
+    int len = 0;
     while (temp) {
-        size++;
+
+        len++;
         temp = temp->next;
     }
 
-    return size;
+    return len;
 }
 
-int lenTable(NodeTable* head) {
+// ********************************************
 
-    int size = 0;
-    NodeTable* temp = head;
 
-    while (temp) {
-        size++;
-        temp = temp->next;
-    }
+void formatMenu(Menu* menu) {
 
-    return size;
-}
+    formatLine();
 
-void __strMenu__(NodeMenu* head) {
+    if (!menu) {
 
-    if (!head) {
-        STR_EMPTY_LIST_ERR;
+        STR_EMPTY_LIST;
         return;
     }
 
-    NodeMenu* temp = head;
+    Menu* temp = menu;
+    while (temp) {
 
-    for (int i = 0; i < lenMenu(head); i++) {
-
-        printf("Item ID: %s, Name: %s, Price: %.2f, Allergens: %s\n", temp->item.itemID, temp->item.name, temp->item.price, temp->item.allergens);
-
+        printf("Item ID: %lld, Name: %s, Price: %.2f, Allergens: %s\n", temp->item.itemID, temp->item.name, temp->item.price, temp->item.allergens);
+        
         temp = temp->next;
     }
+
+    formatLine();
 
     return;
-}
-
-void __strTable__(NodeTable* head) {
-
-    if (!head) {
-        STR_EMPTY_LIST_ERR;
-        return;
-    }
-
-    NodeTable* temp = head;
-
-    for (int i = 0; i < lenTable(head); i++) {
-
-        printf("Number: %d, Capacity: %d, Availability: %d\n", temp->table.number, temp->table.capacity, temp->table.available);
-
-        temp = temp->next;
-    }
-
-    return;
-}
-
-NodeMenu* pushItem(int index, NodeMenu* head, NodeMenu* insert) {
-
-    if (!index) {
-
-        insert->next = head;
-        return insert;
-    }
-
-    if (index >= lenMenu(head) || index < 0) {
-        STR_INDEX_ERR;
-        return head;
-    }
-
-    NodeMenu* temp = head;
-    for (int i = 0; i < index; i++)
-        temp = temp->next;
-
-    insert->next = temp->next;
-    temp->next = insert;
-
-    return head;  
-}
-
-NodeTable* pushTable(int index, NodeTable* head, NodeTable* insert) {
-
-    if (!index) {
-
-        insert->next = head;
-        return insert;
-    }
-
-    if (index >= lenTable(head) || index < 0) {
-        STR_INDEX_ERR;
-        return head;
-    }
-
-    NodeTable* temp = head;
-    for (int i = 0; i < index; i++)
-        temp = temp->next;
-
-    insert->next = temp->next;
-    temp->next = insert;
-
-    return head;  
-}
-
-NodeMenu* popItem(int index, NodeMenu* head) {
-
-    if (!head) {
-        STR_EMPTY_LIST_ERR;
-        return NULL;
-    }
-
-    if (index >= lenMenu(head) || index < 0) {
-        STR_INDEX_ERR;
-        return head;
-    }
-
-    if (!index) {
-
-        NodeMenu* temp = head;
-        head = head->next;
-
-        free(temp);
-        return head;
-    }
-
-    NodeMenu* temp = head;
-    
-    for (int i = 0; i < index - 1; i++)
-        temp = temp->next;
-
-    if (index == lenMenu(head) - 1) {
-
-        free(temp->next);
-        temp->next = NULL;
-
-        return head;
-    }
-
-    NodeMenu* node_del = temp->next;
-    temp->next = temp->next->next;
-    free(node_del);
-
-    return head;
-}
-
-NodeTable* popTable(int index, NodeTable* head) {
-
-    if (!head) {
-        STR_EMPTY_LIST_ERR;
-        return NULL;
-    }
-
-    if (index >= lenTable(head) || index < 0) {
-        STR_INDEX_ERR;
-        return head;
-    }
-
-    if (!index) {
-
-        NodeTable* temp = head;
-        head = head->next;
-
-        free(temp);
-        return head;
-    }
-
-    NodeTable* temp = head;
-    
-    for (int i = 0; i < index - 1; i++)
-        temp = temp->next;
-
-    if (index == lenTable(head) - 1) {
-
-        free(temp->next);
-        temp->next = NULL;
-
-        return head;
-    }
-
-    NodeTable* node_del = temp->next;
-    temp->next = temp->next->next;
-    free(node_del);
-
-    return head;
-}
-
-void formatItem(NodeMenu* list) {
-
-    puts("---------------------------------");
-    __strMenu__(list);
-    printf("LENGTH: %d\n", lenMenu(list));
-}
-
-void formatTable(NodeTable* list) {
-
-    puts("---------------------------------");
-    __strTable__(list);
-    printf("LENGTH: %d\n", lenTable(list));
 }
 
 void testMenu(void) {
 
-    Menu a = {"1", "a", 1, "none"}, b = {"2", "b", 2, "none"}, c = {"3", "c", 3, "none"};
+    Item a = {1, "a", 1, "none"}, b = {2, "b", 2, "none"}, c = {3, "c", 3, "none"};
+    
+    Menu* menu = NULL;
+    formatMenu(menu);
 
-    NodeMenu* list = NULL;
+    menu = addItem(newItem(&a), menu);
+    formatMenu(menu);
 
-    list = pushItem(0, list, __newItem__(&a));
-    formatItem(list);
+    menu = addItem(newItem(&b), menu);
+    formatMenu(menu);
 
-    list = popItem(0, list);
-    formatItem(list);
+    menu = addItem(newItem(&c), menu);
+    formatMenu(menu);
 
-    list = popItem(0, list);
+    menu = removeItem(2, menu);
+    formatMenu(menu);
 
-    list = pushItem(0, list, __newItem__(&a));
-    formatItem(list);
+    menu = removeItem(3, menu);
+    formatMenu(menu);
 
-    list = pushItem(0, list, __newItem__(&b));
-    formatItem(list);
+    menu = removeItem(3, menu);
+    formatMenu(menu);
 
-    list = pushItem(1, list, __newItem__(&c));
-    formatItem(list);
+    menu = removeItem(1, menu);
+    formatMenu(menu);
 
-    list = pushItem(1, list, __newItem__(&b));
-    formatItem(list);
+    deleteMenu(menu);
 
-    list = pushItem(2, list, __newItem__(&a));
-    formatItem(list);
-
-    list = pushItem(3, list, __newItem__(&b));
-    formatItem(list);
-
-    list = popItem(0, list);
-    formatItem(list);
-
-    list = popItem(0, list);
-    formatItem(list);
-
-    list = popItem(1, list);
-    formatItem(list);
-
-    list = popItem(2, list);
-    formatItem(list);
-
-    __delMenu__(list);
     return;
 }
 
-void testTable(void) {
+// ========================================================
 
-    Table a = {1,2,3}, b = {4,5,6}, c = {7,8,9};
+Tables* newTable(Table* table) {
 
-    NodeTable* list = NULL;
+    Tables* node = (Tables*)alloc(sizeof(Tables));
 
-    list = pushTable(0, list, __newTable__(&a));
-    formatTable(list);
-    writeTable(list);
+    node->table.tableNo = table->tableNo;
+    node->table.capacity = table->capacity;
+    node->table.available = 1;
 
-    list = pushTable(0, list, __newTable__(&b));
-    formatTable(list);
-    writeTable(list);
+    node->next = NULL;
 
+    return node;
+}
 
+Tables* addTable(Tables* table, Tables* tables) {
+
+    if (!tables)
+        return table;
+
+    Tables* temp = tables;
+    while (temp->next)
+        temp = temp->next;
+
+    temp->next = table;
+    return tables;
+}
+
+Tables* removeTable(long int tableNo, Tables* tables) {
+
+    if (!tables) {
+
+        STR_EMPTY_LIST;
+        exit(EMPTY_LIST);
+    }
+
+    if (tables->table.tableNo == tableNo) {
+
+        Tables* tableToRemove = tables;
+        tables = tables->next;
+
+        free(tableToRemove);
+        return tables;
+    }
+
+    Tables* temp = tables;
+    while (temp->next && temp->next->table.tableNo != tableNo)
+        temp = temp->next;
+
+    if (!temp->next) {
+
+        STR_INVALID_INDEX;
+        return tables;
+    }
+
+    Tables* tableToRemove = temp->next;
+    temp->next = temp->next->next;
+
+    free(tableToRemove);
+    return tables;
+}
+
+void deleteTables(Tables* tables) {
+
+    if (!tables)
+        return;
+
+    Tables* temp = tables;
+    while (temp) {
+
+        Tables* tableToDelete = temp;
+        temp = temp->next;
+        free(tableToDelete);
+    }
 
     return;
+}
+
+int lenTables(Tables* tables) {
+
+    Tables* temp = tables;
+    int len = 0;
+    while (temp) {
+
+        len++;
+        temp = temp->next;
+    }
+
+    return len;
+}
+
+// ********************************************
+
+void formatTables(Tables* tables) {
+
+    formatLine();
+
+    if (!tables) {
+
+        STR_EMPTY_LIST;
+        return;
+    }
+
+    Tables* temp = tables;
+    while (temp) {
+
+        printf("Table No.: %ld, Capacity: %ld, Available: %d\n", temp->table.tableNo, temp->table.capacity, temp->table.available);
+
+        temp = temp->next;
+    }
+
+    formatLine();
+}
+
+
+
+void testTables(void) {
+
+    Table a = {1,1,0}, b = {2,2,1}, c = {3,3,0};
+
+    Tables* tables = NULL;
+    formatTables(tables);
+
+    tables = addTable(newTable(&a), tables);
+    formatTables(tables);
+
+    tables = addTable(newTable(&b), tables);
+    formatTables(tables);
+
+    tables = addTable(newTable(&c), tables);
+    formatTables(tables);
+
+    tables = removeTable(1, tables);
+    formatTables(tables);
+
+    tables = removeTable(3, tables);
+    formatTables(tables);
+
+    tables = removeTable(4, tables);
+    formatTables(tables);
+
+    tables = addTable(newTable(&a), tables);
+    tables = addTable(newTable(&c), tables);
+    formatTables(tables);
+
+    tables = removeTable(1, tables);
+    formatTables(tables);
+
+    deleteTables(tables);
+
+    return;
+}
+
+// ********************************************
+
+CurrentOrders* newOrder(Order* order) {
+
+    CurrentOrders* node = (CurrentOrders*)alloc(sizeof(CurrentOrders));
+
+    node->order.orderID = order->orderID;
+    strncpy(node->order.name, order->name, sizeof(order->name));
+    strncpy(node->order.phone, order->phone, sizeof(order->phone));
+    node->order.people = order->people;
+    node->order.tableNo = order->tableNo;
+    
+    for (int i = 0; i < sizeof(order->itemIDs) / sizeof(order->itemIDs[0]); i++)
+        node->order.itemIDs[i] = order->itemIDs[i];
+
+    strncpy(node->order.orderTime, order->orderTime, sizeof(order->orderTime));
+    strncpy(node->order.orderDate, order->orderDate, sizeof(order->orderDate));
+    node->order.amount = 0;
+
+    node->next = NULL;
+
+    return node;
+}
+
+CurrentOrders* addOrder(CurrentOrders* currentOrder, CurrentOrders* currentOrders) {
+
+    if (!currentOrders)
+        return currentOrder;
+
+    CurrentOrders* temp = currentOrders;
+    while (temp->next)
+        temp = temp->next;
+
+    temp->next = currentOrder;
+    return currentOrders;
+}
+
+CurrentOrders* removeOrder(long int orderID, CurrentOrders* currentOrders) {
+
+    if (!currentOrders) {
+
+        STR_EMPTY_LIST;
+        exit(EMPTY_LIST);
+    }
+
+    if (currentOrders->order.orderID == orderID) {
+
+        CurrentOrders* orderToRemove = currentOrders;
+        currentOrders = currentOrders->next;
+
+        free(orderToRemove);
+        return currentOrders;
+    }
+
+    CurrentOrders* temp = currentOrders;
+    while (temp->next && temp->next->order.orderID != orderID)
+        temp = temp->next;
+
+    if (!temp->next) {
+
+        STR_INVALID_INDEX;
+        return currentOrders;
+    }
+
+    CurrentOrders* orderToRemove = temp->next;
+    temp->next = temp->next->next;
+
+    free(orderToRemove);
+    return currentOrders;
+}
+
+void deleteCurrentOrders(CurrentOrders* currentOrders) {
+
+    if (!currentOrders)
+        return;
+
+    CurrentOrders* temp = currentOrders;
+    while (temp) {
+
+        CurrentOrders* orderToDelete = temp;
+        temp = temp->next;
+        free(orderToDelete);
+    }
+
+    return;
+}
+
+int lenCurrentOrders(CurrentOrders* currentOrders) {
+
+    CurrentOrders* temp = currentOrders;
+    int len = 0;
+    while (temp) {
+
+        len++;
+        temp = temp->next;
+    }
+
+    return len;
+}
+
+// ********************************************
+
+void formatCurrentOrders(CurrentOrders* currentOrders) {
+
+    formatLine();
+
+    if (!currentOrders) {
+
+        STR_EMPTY_LIST;
+        return;
+    }
+
+    CurrentOrders* temp = currentOrders;
+    while (temp) {
+
+        printf("Order ID: %lld, Name: %s, Ph.No.: %s, People: %d, Table No.: %ld, Time: %s, Date: %s\n", temp->order.orderID, temp->order.name, temp->order.phone, temp->order.people, temp->order.tableNo, temp->order.orderTime, temp->order.orderDate);
+        printf("Item IDs: ");
+        for (int i = 0; i < lenCurrentOrders(currentOrders) && temp->order.itemIDs[i]; i++) {
+            
+            printf("%lld ", temp->order.itemIDs[i]);
+        }
+        printf("\nAmount: %.2f\n", temp->order.amount);
+
+        temp = temp->next;
+
+        formatLine();
+    }
+
+    formatLine();
+
+    return;
+}
+
+void testCurrentOrders(void) {
+
+    Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
+    strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
+    strncpy(a.orderDate, getDate(), sizeof(a.orderDate));
+
+    Order b = {2, "b", "2", 2, 2, {4,5,6}, .amount = 0};
+    strncpy(b.orderTime, getTime(), sizeof(b.orderTime));
+    strncpy(b.orderDate, getDate(), sizeof(b.orderDate));
+
+    Order c = {3, "c", "3", 3, 3, {7,8,9}, .amount = 0};
+    strncpy(c.orderTime, getTime(), sizeof(c.orderTime));
+    strncpy(c.orderDate, getDate(), sizeof(c.orderDate));
+
+    CurrentOrders* co = NULL;
+    formatCurrentOrders(co);
+
+    co = addOrder(newOrder(&a), co);
+    formatCurrentOrders(co);
+
+    co = addOrder(newOrder(&b), co);
+    formatCurrentOrders(co);
+
+    co = addOrder(newOrder(&c), co);
+    formatCurrentOrders(co);
+
+    co = removeOrder(1, co);
+    formatCurrentOrders(co);
+
+    co = removeOrder(3, co);
+    formatCurrentOrders(co);
+
+    co = removeOrder(5, co);
+    formatCurrentOrders(co);
+
+    co = removeOrder(2, co);
+    formatCurrentOrders(co);
+
+    co = addOrder(newOrder(&a), co);
+    co = addOrder(newOrder(&b), co);
+    co = addOrder(newOrder(&c), co);
+    co = removeOrder(2, co);
+    formatCurrentOrders(co);
+
+    deleteCurrentOrders(co);
+
+    return;    
+}
+
+// ***********************************************
+
+OrderHistory* newEntry(Order* order) {
+
+    OrderHistory* node = (OrderHistory*)alloc(sizeof(OrderHistory));
+
+    node->order.orderID = order->orderID;
+    strncpy(node->order.name, order->name, sizeof(order->name));
+    strncpy(node->order.phone, order->phone, sizeof(order->phone));
+    node->order.people = order->people;
+    node->order.tableNo = order->tableNo;
+    
+    for (int i = 0; i < sizeof(order->itemIDs) / sizeof(order->itemIDs[0]); i++)
+        node->order.itemIDs[i] = order->itemIDs[i];
+
+    strncpy(node->order.orderTime, order->orderTime, sizeof(order->orderTime));
+    strncpy(node->order.orderDate, order->orderDate, sizeof(order->orderDate));
+    node->order.amount = 0;
+
+    node->next = NULL;
+
+    return node;
+}
+
+OrderHistory* addEntry(OrderHistory* entry, OrderHistory* orderHistory) {
+
+    if (!orderHistory)
+        return entry;
+
+    OrderHistory* temp = orderHistory;
+    while (temp->next)
+        temp = temp->next;
+
+    temp->next = entry;
+    return orderHistory;
+}
+
+void deleteOrderHistory(OrderHistory* orderHistory) {
+
+    if (!orderHistory)
+        return;
+
+    OrderHistory* temp = orderHistory;
+    while (temp) {
+
+        OrderHistory* entryToDelete = temp;
+        temp = temp->next;
+        free(entryToDelete);
+    }
+
+    return;
+}
+
+int lenOrderHistory(OrderHistory* orderHistory) {
+
+    OrderHistory* temp = orderHistory;
+    int len = 0;
+    while (temp) {
+
+        len++;
+        temp = temp->next;
+    }
+
+    return len;
+}
+
+// ***********************************************
+
+void formatOrderHistory(OrderHistory* orderHistory) {
+
+    formatLine();
+
+    if (!orderHistory) {
+
+        STR_EMPTY_LIST;
+        return;
+    }
+
+    OrderHistory* temp = orderHistory;
+    while (temp) {
+
+        printf("Order ID: %lld, Name: %s, Ph.No.: %s, People: %d, Table No.: %ld, Time: %s, Date: %s\n", temp->order.orderID, temp->order.name, temp->order.phone, temp->order.people, temp->order.tableNo, temp->order.orderTime, temp->order.orderDate);
+        printf("Item IDs: ");
+        for (int i = 0; i < lenOrderHistory(orderHistory) && temp->order.itemIDs[i]; i++) {
+            
+            printf("%lld ", temp->order.itemIDs[i]);
+        }
+        printf("\nAmount: %.2f\n", temp->order.amount);
+
+        temp = temp->next;
+
+        formatLine();
+    }
+
+    formatLine();
+
+    return;
+}
+
+void testOrderHistory(void) {
+
+    Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
+    strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
+    strncpy(a.orderDate, getDate(), sizeof(a.orderDate));
+
+    Order b = {2, "b", "2", 2, 2, {4,5,6}, .amount = 0};
+    strncpy(b.orderTime, getTime(), sizeof(b.orderTime));
+    strncpy(b.orderDate, getDate(), sizeof(b.orderDate));
+
+    Order c = {3, "c", "3", 3, 3, {7,8,9}, .amount = 0};
+    strncpy(c.orderTime, getTime(), sizeof(c.orderTime));
+    strncpy(c.orderDate, getDate(), sizeof(c.orderDate));
+
+    OrderHistory* oh = NULL;
+    formatOrderHistory(oh);
+
+    oh = addEntry(newEntry(&a), oh);
+    formatOrderHistory(oh);
+
+    oh = addEntry(newEntry(&b), oh);
+    formatOrderHistory(oh);
+
+    oh = addEntry(newEntry(&c), oh);
+    formatOrderHistory(oh);
+
+    deleteOrderHistory(oh);
+
+    return;    
 }
