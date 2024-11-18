@@ -8,7 +8,7 @@
 #define REALLOC_FAILED -2
 #define FILE_OPEN_FAILED -3
 
-#define STR_ALLOC_FAILED fprintf(stderr, "\a\nFATAL ERROR! MEMORY ALLOCATION FAILED!\n\n");
+#define STR_ALLOC_FAILED fprintf(stderr, "\a\nFATAL ERROR! MEMORY ALLOCATION FAILED!\n\n")
 #define STR_REALLOC_FAILED fprintf(stderr, "\a\nFATAL ERROR! MEMORY REALLOCATION FAILED!\n\n")
 #define STR_FILE_OPEN_FAILED fprintf(stderr, "\a\nFATAL ERROR!FILE NOT FOUND!\n\n")
 
