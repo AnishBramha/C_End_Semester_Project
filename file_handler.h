@@ -14,21 +14,21 @@ FILE* open(const char* fileName, const char* mode);
 
 Menu* loadMenu(void);
 void updateMenu(Menu* menu);
-// menu.csv format -> 
+// menu.csv format -> Item_ID,Name,Price,Allergens(separated by spaces)
 
 Tables* loadTables(void);
 void updateTables(Tables*);
-// tables.csv format -> 
+// tables.csv format -> Table_No,Capacity,Available
 
 CurrentOrders* loadCurrentOrders(void);
 void updateCurrentOrders(CurrentOrders* currentOrders);
-// current.csv format -> 
+// current.csv format -> orderID,name,phone,people,tableNo,itemIDs,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount
 
 OrderHistory* loadOrderHistory(void);
 void updateOrderHistory(OrderHistory* orderHistory);
-// history.csv format -> 
+// history.csv format -> orderID,name,phone,people,tableNo,itemIDs,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount
 
 void logAction(const char* fileName, const char* functionCalled);
-// actions.log format -> 
+// actions.log format -> <filename.extension> -> <fucntion called> @ Time(HH:MM)(24-hr format) & Date(DD:MM:YY)
 
 #endif
