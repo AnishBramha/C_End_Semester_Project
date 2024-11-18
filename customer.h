@@ -4,7 +4,7 @@
 #include "linked_list.h"
 #include "file_handler.h"
 
-Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentOrders* currentOrders, int* futureTableNo);
+Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentOrders* currentOrders, long int* futureTableNo);
 // searches through Tables linked list, finds the first table with capacity >= people, sets 'available' to 0, returns head of Tables linked list,
 // sets table number to a particular order ID in CurrentOrders Linked List and modifies futureTableNo
 
