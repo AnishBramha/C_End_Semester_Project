@@ -1,167 +1,100 @@
-#include<stdio.h>
-#include<string.h>
-#include "ui.h"
+#include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "file_handler.h"
 #include "linked_list.h"
-#include<stdlib.h>
-#define CLEAR_SCREEN system("clear");
 
+#define ALLOC_FAILED -1
+#define FILE_OPEN_FAILED -3
 
-int addMenuItem(char name[],float price,char allergens[],int type, int spice, int veg_nonveg ){
+#define STR_ALLOC_FAILED fprintf(stderr, "\a\nFATAL ERROR! MEMORY ALLOCATION FAILED!\n\n")
+#define STR_FILE_OPEN_FAILED fprintf(stderr, "\a\nFATAL ERROR! FILE NOT FOUND!\n\n")
 
-    if(type!=1&&type!=2&&type!=3 && type!=4){
-        printf("Error with \'TYPE\'!\n");
-        return -1;
-    }
-    
-    if(veg_nonveg!=0&&veg_nonveg!=1&&veg_nonveg!=2){
-        printf("Error with \'Veg or Nonveg\'!\n");
-        return -1;
-    }
-    
-    if(spice>=10||spice<=-10){
-        printf("Error with \'Spice Level\'!\n");
-        return -1;
-    }
+#undef malloc
+#undef fopen
 
-    if(strlen(name)==0){
-        printf("Name of the dish is empty!\n");
-        return -1;
+static void* alloc(size_t size) {
+
+    // logAction("file_handler.c", "alloc");
+
+    void* mem = malloc(size);
+    if (!mem) {
+
+        STR_ALLOC_FAILED;
+        exit(ALLOC_FAILED);
     }
 
-    if(strlen(allergens)==0){
-        printf("Allergen(s) is(are) missing!\n");
-        return -1;
-    }
-
-    if(price<0){
-        printf("Price can not be negative!\n");
-        return -1;
-    }
-
-    
-    FILE *f;
-    f=  fopen("menu.csv","a+");
-    long long int lastID=0;
-    long long int finalLastID=0;
-    int read=1;
-    rewind(f);
-    // Retriving the last ItemID so that I can automatically assign new ItemID.
-    while (1==1){
-        char c=fgetc(f);
-        if(c==EOF){break;}
-        if(read>=1){
-            lastID=lastID*10+((int)c-48);
-            read++;
-        }
-        if(read==8){read=0;}
-        if(c=='\n'){
-            read=1;
-            finalLastID=lastID;
-            lastID=0;
-        }
-    }
-    long long int itemID=(1000000*type)+(100000*spice)+(10000*veg_nonveg)+(finalLastID%10000)+1;
-    fprintf(f,"%lld,%s,%0.2f,%s\n",itemID,name,price,allergens);
-    fclose(f);
-    return 0;
+    return mem;
 }
 
-void printMenu(){
-    CLEAR_SCREEN
-            menuLogo();
-            menuHeader();
- FILE *f;
-    f=  fopen("menu.csv","r+");
-    int counter=0;
-    long long int id=0;
-    char name[100];
-    char price[20];
-    char allergens[100];
-    int counter2=0;
-    int counter3=0;
-    int counter4=0;
-    int flag1=0;
-    while (1==1){
-        char c=fgetc(f);
-        if(c==EOF){break;}
-        if(c=='\n'){
-            char idArr[8];
-            for(int i=6;i>=0;i--){
-                idArr[i]=(char)((id%10)+48);
-                id=id/10;
-            }
-            idArr[7]='\0';
-            char spice[2]={idArr[1],'\0'};
-            int veg=idArr[2]-48;
-            
-            switch(idArr[0]){
-                case '1':
-                    menuRow(name,&idArr[3],spice,"Starter",allergens,price,veg);
-                    break;
-                case '2':
-                    menuRow(name,&idArr[3],spice,"Main Course",allergens,price,veg);
-                    break;
-                case '3':
-                    menuRow(name,&idArr[3],spice,"Dessert",allergens,price,veg);
-                    break;
-                case '4':
-                    menuRow(name,&idArr[3],spice,"Beverage",allergens,price,veg);
-                    break;    
-                    
-            }
-            memset(name, 0, sizeof(name));
-            memset(price, 0, sizeof(price));
-            memset(allergens, 0, sizeof(allergens));
-            allergens[counter3]='\0';
-            counter=0;counter2=0;counter3=0;flag1=0;id=0;counter4=0;
-            continue;
-        }
-        if(c==','){
-            counter++;
-            name[counter2]='\0';
-            price[counter4]='\0';
-            allergens[counter3]='\0';
-            continue;
-        }
-        if(c=='.'){flag1=1;}
-        switch(counter){
-            case 0:
-                id=id*10+(int)c-48;
-                break;
-            case 1:
-                name[counter2]=c;
-                counter2++;
-                break;
-            
-            case 2:
-                price[counter4]=c;
-                counter4++;
-                break;
-            case 3:
-                allergens[counter3]=c;
-                counter3++;
-                break;    
-        }
-       
-    }   
-    menuFooter();
-}
+static FILE* open(const char* fileName, const char* mode) {
 
+    //logAction("file_handler.c", "open");
 
-void writeTable(NodeTable* head) {
-
-    FILE* fptr = fopen("tables.csv", "w");
+    FILE* fptr = fopen(fileName, mode);
     if (!fptr) {
 
-        fprintf(stderr, "\n\aFATAL ERROR! FILE NOT FOUND!\n");
-        exit(EXIT_FAILURE);
+        STR_FILE_OPEN_FAILED;
+        exit(FILE_OPEN_FAILED);
     }
 
-    NodeTable* temp = head;
+    return fptr;
+}
 
-    for (int i = 0; i < lenTable(head); i++) {
+void logAction(const char* fileName, const char* functionCalled) {
 
-        fprintf(fptr, "%d,%d,%d\n", temp->table.number, temp->table.capacity, temp->table.available);
+    FILE* fptr = open("actions.log", "a");
+
+    fprintf(fptr, "%s -> %s() @ %s & %s\n", fileName, functionCalled, getTime(), getDate());
+
+    fclose(fptr);
+    return;
+}
+
+Menu* loadMenu(void) {
+
+    logAction("file_handler.c", "loadMenu");
+
+    FILE* fptr = open("menu.csv", "r");
+    
+    Menu* menu = NULL;
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fptr)) {
+
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        Item item;
+
+        item.itemID = atoll(strtok(buffer, ","));
+        strncpy(item.name, strtok(NULL, ","), sizeof(item.name));
+        item.price = atof(strtok(NULL, ","));
+        strncpy(item.allergens, strtok(NULL, ","), sizeof(item.allergens) - 1);
+
+        menu = addItem(newItem(&item), menu);
+    }
+
+    fclose(fptr);
+    return menu;
+}
+
+void updateMenu(Menu* menu) {
+
+    logAction("file_handler.c", "updateMenu");
+
+    if (!menu)
+        return;
+
+    FILE* fptr = open("menu.csv", "w+");
+    
+    Menu* temp = menu;
+
+    while (temp) {
+
+        fprintf(fptr, "%lld,%s,%.2f,%s,\n", temp->item.itemID, temp->item.name, temp->item.price, temp->item.allergens);
+
         temp = temp->next;
     }
 
@@ -169,10 +102,190 @@ void writeTable(NodeTable* head) {
     return;
 }
 
+Tables* loadTables(void) {
 
+    logAction("file_handler.c", "loadTables");
 
-// int main (){
-//     printMenu();
-//     return 0;
-// }
+    FILE* fptr = open("tables.csv", "r");
 
+    Tables* tables = NULL;
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fptr)) {
+
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        Table table;
+
+        table.tableNo = atol(strtok(buffer, ","));
+        table.capacity = atol(strtok(NULL, ","));
+        table.available = atoi(strtok(NULL, ","));
+
+        tables = addTable(newTable(&table), tables);
+    }
+
+    fclose(fptr);
+    return tables;
+}
+
+void updateTables(Tables* tables) {
+
+    logAction("file_handler.c", "updateTables");
+
+    if (!tables)
+        return;
+
+    FILE* fptr = open("tables.csv", "w+");
+
+    Tables* temp = tables;
+
+    while (temp) {
+
+        fprintf(fptr, "%ld,%ld,%d,\n", temp->table.tableNo, temp->table.capacity, temp->table.available);
+
+        temp = temp->next;
+    }
+
+    fclose(fptr);
+    return;
+}
+
+CurrentOrders* loadCurrentOrders(void) {
+
+    logAction("file_handler.c", "loadCurrentOrders");
+
+    FILE* fptr = open("current.csv", "r");
+
+    CurrentOrders* currentOrders = NULL;
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fptr)) {
+
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        Order order;
+
+        order.orderID = atol(strtok(buffer, ","));
+        strncpy(order.name, strtok(NULL, ","), sizeof(order.name));
+        strncpy(order.phone, strtok(NULL, ","), sizeof(order.phone));
+        order.people = atoi(strtok(NULL, ","));
+        order.tableNo = atol(strtok(NULL, ","));
+        strncpy(order.orderTime, strtok(NULL, ","), sizeof(order.orderTime));
+        strncpy(order.orderDate, strtok(NULL, ","), sizeof(order.orderDate));
+        order.amount = atof(strtok(NULL, ","));
+      
+        for (int i = 0; i < sizeof(order.itemIDs) / sizeof(order.itemIDs[0]); i++)
+            order.itemIDs[i] = 0;
+
+        char* IDs = strtok(NULL, ",");
+        if (IDs) {
+            char* token = strtok(IDs, " ");
+            int i = 0;
+            while (token && i < (int)(sizeof(order.itemIDs) / sizeof(order.itemIDs[0]))) {
+                order.itemIDs[i++] = atoll(token);
+                token = strtok(NULL, " ");
+            }
+        }
+
+        currentOrders = addOrder(newOrder(&order), currentOrders);
+    }
+
+    fclose(fptr);
+    return currentOrders;
+}
+
+void updateCurrentOrders(CurrentOrders* currentOrders) {
+
+    logAction("file_handler.c", "updateCurrentOrders");
+
+    if (!currentOrders)
+        return;
+
+    FILE* fptr = open("current.csv","w+");
+
+    CurrentOrders* temp = currentOrders;
+
+    while (temp) {
+
+        fprintf(fptr, "%ld,%s,%s,%d,%ld,%s,%s,%.2f,", temp->order.orderID, temp->order.name, temp->order.phone, temp->order.people, temp->order.tableNo, temp->order.orderTime, temp->order.orderDate, temp->order.amount);
+
+        for (int i = 0; temp->order.itemIDs[i] && i < sizeof(temp->order.itemIDs) / sizeof(temp->order.itemIDs[0]); i++)
+            fprintf(fptr, "%lld ", temp->order.itemIDs[i]);
+
+        temp = temp->next;
+        fputc('\n', fptr);
+    }
+
+    fclose(fptr);
+    return;
+}
+
+OrderHistory* loadOrderHistory(void) {
+
+    logAction("file_handler.c", "loadOrderHistory");
+
+    FILE* fptr = open("history.csv", "r");
+
+    OrderHistory* orderHistory = NULL;
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), fptr)) {
+
+        buffer[strcspn(buffer, "\n")] = '\0';
+
+        Order order;
+
+        order.orderID = atol(strtok(buffer, ","));
+        strncpy(order.name, strtok(NULL, ","), sizeof(order.name));
+        strncpy(order.phone, strtok(NULL, ","), sizeof(order.phone));
+        order.people = atoi(strtok(NULL, ","));
+        order.tableNo = atol(strtok(NULL, ","));
+        strncpy(order.orderTime, strtok(NULL, ","), sizeof(order.orderTime));
+        strncpy(order.orderDate, strtok(NULL, ","), sizeof(order.orderDate));
+        order.amount = atof(strtok(NULL, ","));
+      
+        for (int i = 0; i < sizeof(order.itemIDs) / sizeof(order.itemIDs[0]); i++)
+            order.itemIDs[i] = 0;
+
+        char* IDs = strtok(NULL, ",");
+        if (IDs) {
+            char* token = strtok(IDs, " ");
+            int i = 0;
+            while (token && i < (int)(sizeof(order.itemIDs) / sizeof(order.itemIDs[0]))) {
+                order.itemIDs[i++] = atoll(token);
+                token = strtok(NULL, " ");
+            }
+        }
+
+        orderHistory = addEntry(newEntry(&order), orderHistory);
+    }
+
+    fclose(fptr);
+    return orderHistory;
+}
+
+void updateOrderHistory(OrderHistory* orderHistory) {
+
+    logAction("file_handler.c", "updateOrderHistory");
+
+    if (!orderHistory)
+        return;
+
+    FILE* fptr = open("history.csv","w+");
+
+    OrderHistory* temp = orderHistory;
+
+    while (temp) {
+
+        fprintf(fptr, "%ld,%s,%s,%d,%ld,%s,%s,%.2f,", temp->order.orderID, temp->order.name, temp->order.phone, temp->order.people, temp->order.tableNo, temp->order.orderTime, temp->order.orderDate, temp->order.amount);
+
+        for (int i = 0; temp->order.itemIDs[i] && i < sizeof(temp->order.itemIDs) / sizeof(temp->order.itemIDs[0]); i++)
+            fprintf(fptr, "%lld ", temp->order.itemIDs[i]);
+
+        temp = temp->next;
+        fputc('\n', fptr);
+    }
+
+    fclose(fptr);
+    return;
+}
