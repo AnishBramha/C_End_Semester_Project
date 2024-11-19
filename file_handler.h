@@ -6,29 +6,25 @@
 #include <stdlib.h>
 #include "linked_list.h"
 
-#undef malloc
-void* alloc(size_t size);
-
-#undef fopen
-FILE* open(const char* fileName, const char* mode);
-
 Menu* loadMenu(void);
 void updateMenu(Menu* menu);
-// menu.csv format -> Item_ID,Name,Price,Allergens(separated by spaces)
+// menu.csv format -> Item_ID,Name,Price,Allergens(separated by spaces),
 
 Tables* loadTables(void);
 void updateTables(Tables*);
-// tables.csv format -> Table_No,Capacity,Available
+// tables.csv format -> Table_No,Capacity,Available,
 
 CurrentOrders* loadCurrentOrders(void);
 void updateCurrentOrders(CurrentOrders* currentOrders);
-// current.csv format -> orderID,name,phone,people,tableNo,itemIDs,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount
+// current.csv format -> orderID,name,phone,people,tableNo,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount,itemIDs(separated by spaces)
 
 OrderHistory* loadOrderHistory(void);
 void updateOrderHistory(OrderHistory* orderHistory);
-// history.csv format -> orderID,name,phone,people,tableNo,itemIDs,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount
+// history.csv format -> orderID,name,phone,people,tableNo,OrderTime(HH:MM)(24-hr format),OrderDate(DD:MM:YY),amount,itemIDs(separated by spaces)
 
 void logAction(const char* fileName, const char* functionCalled);
-// actions.log format -> <filename.extension> -> <fucntion called> @ Time(HH:MM)(24-hr format) & Date(DD:MM:YY)
+// actions.log format -> <filename.extension> -> <function called> @ Time(HH:MM)(24-hr format) & Date(DD:MM:YY),
+
+// NOTE: Item IDs will be stored as: ,101 102 103 000 000 (\n)
 
 #endif
