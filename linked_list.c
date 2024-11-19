@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include "linked_list.h"
+#include "file_handler.h"
 
 #define ALLOC_FAILED -1
 #define EMPTY_LIST -4
@@ -15,6 +16,8 @@
 #undef malloc
 
 static void* alloc(size_t size) {
+
+    // logAction("linked_list.c", "alloc");
 
     void* mem = malloc(size);
     if (!mem) {
@@ -33,10 +36,12 @@ void formatLine(void) {
 
 // int main(void) {
 
-//     // testMenu();
-//     // testTables();
-//     //testCurrentOrders();
-//     // testOrderHistory();
+//     logAction("linked_list.c", "main");
+
+//     testMenu();
+//     testTables();
+//     testCurrentOrders();
+//     testOrderHistory();
 
 //     return 0;
 // }
@@ -49,6 +54,7 @@ char* getTime(void) {
     static char strtime[6];
     snprintf(strtime, sizeof(strtime), "%-02d:%02d", ctime->tm_hour, ctime->tm_min);
 
+    // logAction("linked_list.c", "getTime");
     return strtime;
 }
 
@@ -60,6 +66,7 @@ char* getDate(void) {
     static char strdate[9];
     snprintf(strdate, sizeof(strdate), "%02d-%02d-%02d", ctime->tm_mday, ctime->tm_mon + 1, ctime->tm_year % 100);
 
+    // logAction("linked_list.c", "getDate");
     return strdate;
 }
 
@@ -69,6 +76,8 @@ char* getDate(void) {
 
 Menu* newItem(Item* item) {
 
+    logAction("linked_list.c", "newItem");
+
     Menu* node = (Menu*)alloc(sizeof(Menu));
 
     node->item.itemID = item->itemID;
@@ -77,11 +86,12 @@ Menu* newItem(Item* item) {
     strncpy(node->item.allergens, item->allergens, sizeof(node->item.allergens));
 
     node->next = NULL;
-
     return node;
 }
 
 Menu* addItem(Menu* item, Menu* menu) {
+
+    logAction("linked_list.c", "addItem");
 
     if (!menu)
         return item;
@@ -95,6 +105,8 @@ Menu* addItem(Menu* item, Menu* menu) {
 }
 
 Menu* removeItem(long long int itemID, Menu* menu) {
+
+    logAction("linked_list.c", "removeItem");
 
     if (!menu) {
 
@@ -130,6 +142,8 @@ Menu* removeItem(long long int itemID, Menu* menu) {
 
 void deleteMenu(Menu* menu) {
 
+    logAction("linked_list.c", "deleteMenu");
+
     if (!menu)
         return;
 
@@ -146,6 +160,8 @@ void deleteMenu(Menu* menu) {
 
 int lenMenu(Menu* menu) {
 
+    logAction("linked_list.c", "lenMenu");
+
     Menu* temp = menu;
     int len = 0;
     while (temp) {
@@ -161,6 +177,8 @@ int lenMenu(Menu* menu) {
 
 
 void formatMenu(Menu* menu) {
+
+    logAction("linked_list.c", "formatMenu");
 
     formatLine();
 
@@ -184,6 +202,8 @@ void formatMenu(Menu* menu) {
 }
 
 void testMenu(void) {
+
+    logAction("linked_list.c", "testMenu");
 
     Item a = {1, "a", 1, "none"}, b = {2, "b", 2, "none"}, c = {3, "c", 3, "none"};
     
@@ -220,11 +240,13 @@ void testMenu(void) {
 
 Tables* newTable(Table* table) {
 
+    // logAction("linked_list.c", "newTable");
+
     Tables* node = (Tables*)alloc(sizeof(Tables));
 
     node->table.tableNo = table->tableNo;
     node->table.capacity = table->capacity;
-    node->table.available = 1;
+    node->table.available = table->available;
 
     node->next = NULL;
 
@@ -232,6 +254,8 @@ Tables* newTable(Table* table) {
 }
 
 Tables* addTable(Tables* table, Tables* tables) {
+
+    // logAction("linked_list.c", "addTable");
 
     if (!tables)
         return table;
@@ -245,6 +269,8 @@ Tables* addTable(Tables* table, Tables* tables) {
 }
 
 Tables* removeTable(long int tableNo, Tables* tables) {
+
+    // logAction("linked_list.c", "removeTable");
 
     if (!tables) {
 
@@ -280,6 +306,8 @@ Tables* removeTable(long int tableNo, Tables* tables) {
 
 void deleteTables(Tables* tables) {
 
+    // logAction("linked_list.c", "deleteTables");
+
     if (!tables)
         return;
 
@@ -296,6 +324,8 @@ void deleteTables(Tables* tables) {
 
 int lenTables(Tables* tables) {
 
+    // logAction("linked_list.c", "lenTables");
+
     Tables* temp = tables;
     int len = 0;
     while (temp) {
@@ -310,6 +340,8 @@ int lenTables(Tables* tables) {
 // ********************************************
 
 void formatTables(Tables* tables) {
+
+    // logAction("linked_list.c", "formatTables");
 
     formatLine();
 
@@ -333,6 +365,8 @@ void formatTables(Tables* tables) {
 
 
 void testTables(void) {
+
+    // logAction("linked_list.c", "testTables");
 
     Table a = {1,1,0}, b = {2,2,1}, c = {3,3,0};
 
@@ -373,6 +407,8 @@ void testTables(void) {
 
 CurrentOrders* newOrder(Order* order) {
 
+    logAction("linked_list.c", "newOrder");
+
     CurrentOrders* node = (CurrentOrders*)alloc(sizeof(CurrentOrders));
 
     node->order.orderID = order->orderID;
@@ -380,6 +416,9 @@ CurrentOrders* newOrder(Order* order) {
     strncpy(node->order.phone, order->phone, sizeof(order->phone));
     node->order.people = order->people;
     node->order.tableNo = order->tableNo;
+
+    for (int i = 0; i < sizeof(order->itemIDs) / sizeof(order->itemIDs[0]); i++)
+        node->order.itemIDs[i] = 0;
     
     for (int i = 0; i < sizeof(order->itemIDs) / sizeof(order->itemIDs[0]); i++)
         node->order.itemIDs[i] = order->itemIDs[i];
@@ -395,6 +434,8 @@ CurrentOrders* newOrder(Order* order) {
 
 CurrentOrders* addOrder(CurrentOrders* currentOrder, CurrentOrders* currentOrders) {
 
+    logAction("linked_list.c", "addOrder");
+
     if (!currentOrders)
         return currentOrder;
 
@@ -407,6 +448,8 @@ CurrentOrders* addOrder(CurrentOrders* currentOrder, CurrentOrders* currentOrder
 }
 
 CurrentOrders* removeOrder(long int orderID, CurrentOrders* currentOrders) {
+
+    logAction("linked_list.c", "removeOrder");
 
     if (!currentOrders) {
 
@@ -442,6 +485,8 @@ CurrentOrders* removeOrder(long int orderID, CurrentOrders* currentOrders) {
 
 void deleteCurrentOrders(CurrentOrders* currentOrders) {
 
+    logAction("linked_list.c", "deleteCurrentOrders");
+
     if (!currentOrders)
         return;
 
@@ -458,6 +503,8 @@ void deleteCurrentOrders(CurrentOrders* currentOrders) {
 
 int lenCurrentOrders(CurrentOrders* currentOrders) {
 
+    logAction("linked_list.c", "lenCurrentOrders");
+
     CurrentOrders* temp = currentOrders;
     int len = 0;
     while (temp) {
@@ -472,6 +519,8 @@ int lenCurrentOrders(CurrentOrders* currentOrders) {
 // ********************************************
 
 void formatCurrentOrders(CurrentOrders* currentOrders) {
+
+    logAction("linked_list.c", "formatCurrentOrders");
 
     formatLine();
 
@@ -503,6 +552,8 @@ void formatCurrentOrders(CurrentOrders* currentOrders) {
 }
 
 void testCurrentOrders(void) {
+
+    logAction("linked_list.c", "testCurrentOrders");
 
     Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
     strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
@@ -555,6 +606,8 @@ void testCurrentOrders(void) {
 
 OrderHistory* newEntry(Order* order) {
 
+    logAction("linked_list.c", "newEntry");
+
     OrderHistory* node = (OrderHistory*)alloc(sizeof(OrderHistory));
 
     node->order.orderID = order->orderID;
@@ -577,6 +630,8 @@ OrderHistory* newEntry(Order* order) {
 
 OrderHistory* addEntry(OrderHistory* entry, OrderHistory* orderHistory) {
 
+    logAction("linked_list.c", "addEntry");
+
     if (!orderHistory)
         return entry;
 
@@ -589,6 +644,8 @@ OrderHistory* addEntry(OrderHistory* entry, OrderHistory* orderHistory) {
 }
 
 void deleteOrderHistory(OrderHistory* orderHistory) {
+
+    logAction("linked_list.c", "deleteOrderHistory");
 
     if (!orderHistory)
         return;
@@ -606,6 +663,8 @@ void deleteOrderHistory(OrderHistory* orderHistory) {
 
 int lenOrderHistory(OrderHistory* orderHistory) {
 
+    logAction("linked_list.c", "lenOrderHistory");
+
     OrderHistory* temp = orderHistory;
     int len = 0;
     while (temp) {
@@ -620,6 +679,8 @@ int lenOrderHistory(OrderHistory* orderHistory) {
 // ***********************************************
 
 void formatOrderHistory(OrderHistory* orderHistory) {
+
+    logAction("linked_list.c", "formatOrderHistory");
 
     formatLine();
 
@@ -651,6 +712,8 @@ void formatOrderHistory(OrderHistory* orderHistory) {
 }
 
 void testOrderHistory(void) {
+
+    logAction("linked_list.c", "testOrderHistory");
 
     Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
     strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
