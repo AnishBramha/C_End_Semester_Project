@@ -16,7 +16,7 @@
 #undef realloc
 #undef fopen
 
-void* alloc(size_t size) {
+static void* alloc(size_t size) {
 
     void* mem = malloc(size);
     if (!mem) {
@@ -28,7 +28,7 @@ void* alloc(size_t size) {
     return mem;
 }
 
-void* ralloc(void* ptr, size_t size) {
+static void* ralloc(void* ptr, size_t size) {
 
     void* mem = realloc(ptr, size);
     if (!mem) {
@@ -40,7 +40,7 @@ void* ralloc(void* ptr, size_t size) {
     return mem;
 }
 
-FILE* open(const char* fileName, const char* mode) {
+static FILE* open(const char* fileName, const char* mode) {
 
     FILE* fptr = fopen(fileName, mode);
     if (!fptr) {
