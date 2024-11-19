@@ -1,6 +1,7 @@
 #ifndef UI_H
 #define UI_H
-#define CLEAR_SCREEN system("cls");
+
+void ClearScreen();
 
 // Constants for menu layout
 #define MAX_ITEM_NAME_WIDTH  21
@@ -9,6 +10,12 @@
 #define MAX_TYPE_WIDTH        11
 #define MAX_ALLERGEN_WIDTH   15
 #define MAX_PRICE_WIDTH       7
+
+
+// Constants for Graph
+
+#define DAYS 30
+#define HEIGHT 25
 
 // Terminal color codes
 #define BLUE "\033[96m"
@@ -21,8 +28,8 @@
 void logo(void);
 void StartupPage(void);
 void LoginPage(void);
-void CustomerDetailsPage(char name[], char phone[], int *persons, int flag);
-void ManagerLoginPage(char username[], char password[], int flag);
+void CustomerDetailsPage(int flag);
+void ManagerLoginPage(int flag);
 void Customerloggedinpage(void);
 void ManagerLoggedinpage(void);
 void menuLogo(void);
