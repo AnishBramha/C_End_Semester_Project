@@ -2,27 +2,34 @@
 #include <string.h>
 #include <stdlib.h>
 #include<unistd.h>
-// #include "file_handler.h"
+#include "ui.h"
+#include "file_handler.h"
 
-#define CLEAR_SCREEN system("cls");
+int OS=1;
 
-#define MAX_ITEM_NAME_WIDTH  21
-#define MAX_ITEM_NO_WIDTH    8
-#define MAX_SPICE_WIDTH      10
-#define MAX_TYPE_WIDTH       11
-#define MAX_ALLERGEN_WIDTH   15
-#define MAX_PRICE_WIDTH      7
+void ClearScreen(){
+    if (OS==1) system("cls");
+    if(OS==2) system("clear");
+}
 
-#define DAYS 30
-#define HEIGHT 25
 
-void LoginPage();
+// #define MAX_ITEM_NAME_WIDTH  21
+// #define MAX_ITEM_NO_WIDTH    8
+// #define MAX_SPICE_WIDTH      10
+// #define MAX_TYPE_WIDTH       11
+// #define MAX_ALLERGEN_WIDTH   15
+// #define MAX_PRICE_WIDTH      7
 
-#define BLUE "\033[96m"
-#define RED "\033[91m"
-#define YELLOW "\033[33m"
-#define BLINKING_YELLOW "\033[93m"
-#define RESET "\033[0m"
+// #define DAYS 30
+// #define HEIGHT 25
+
+// void LoginPage();
+
+// #define BLUE "\033[96m"
+// #define RED "\033[91m"
+// #define YELLOW "\033[33m"
+// #define BLINKING_YELLOW "\033[93m"
+// #define RESET "\033[0m"
 
 
 
@@ -120,7 +127,7 @@ void menuHeader(){
 
 
 void StartupPage() {
-    CLEAR_SCREEN;
+    ClearScreen();;
     
     printf("\033[96m***************************************************\n");
     printf("*                                                 *\n");
@@ -136,35 +143,65 @@ void StartupPage() {
     printf("\n");
 
  
-    printf(" \033[91m   Loading...\n \033[33m");
+    printf(" \033[91m     Loading...\n\n \033[33m");
 
     for (int i = 0; i <= 20; i++) {
    
         int percentage = (i * 100) / 20;
         int progress = (i * 39) / 20;  
      
-        printf("\r  [");  
+        printf("\r  || ");  
         for (int j = 0; j < 39; j++) {
-            if (j <= progress)
-                printf("#");
+            if (j <= progress){
+                if(OS==1) printf("\xDB");
+                if(OS==2) printf("\u2588");
+            }
             else
                 printf(" ");
         }
         if(percentage==80){
             usleep(1000000);
         }
-        printf("] %d%%", percentage); 
+        printf(" || %d%%", percentage); 
 
         fflush(stdout);  
         usleep(100000);  
     }
 
     printf("\n\n\033[0m ");  
-    CLEAR_SCREEN
+    ClearScreen();
     LoginPage();
+    
 }
 
+
+void OsSelectionPage(){
+      
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*         %sPlease select your operating system          %s*\n",RED,BLUE);
+    printf("*                                                      *\n");
+    printf("*     %s____________________      ____________________   %s*\n",YELLOW,BLUE);
+    printf("*    %s|                    |    |                    |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|    1. WINDOWS      |    |     2. UBUNTU      |  %s*\n",YELLOW,BLUE);
+    printf("*    %s|____________________|    |____________________|  %s*\n",YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    printf("\n %sYour Choice: %s",BLINKING_YELLOW,RESET);
+    extern int OS;
+    scanf("%d",&OS);
+    if(OS!=1 && OS!=2){
+        OsSelectionPage();
+    }
+    else{
+        StartupPage();
+    }
+ 
+}
+
+
 void LoginPage() {
+    ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*               %s Welcome to Taj Hotel                %s  *\n",RED,BLUE);
@@ -179,10 +216,27 @@ void LoginPage() {
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n \033[0m");
+    int i;
+    printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
+    scanf("%d",&i);
+    printf("\033[0m");
+    int c;
+    while ((c = getchar()) != '\n');
+    if(i==1){
+        CustomerDetailsPage(0);
+    }
+    else if(i==2){
+        ManagerLoginPage(0);
+    }
+    else {
+        LoginPage();
+    }
+    
 }
 
-void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
-    CLEAR_SCREEN;
+void CustomerDetailsPage(int flag) {  
+    char name[100];char phone[100];int persons=1;
+    ClearScreen();
     printf("%s****************************************************\n",BLUE);
     printf("*                                                  *\n");
     printf("*              %sCustomer Details Page%s               *\n",YELLOW,BLUE);
@@ -214,11 +268,10 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
     printf("****************************************************\033[F\033[F*  %s Total Person: %s",YELLOW,RED);
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
-    scanf("%d",persons);
+    scanf("%d",&persons);
     printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s %s",BLINKING_YELLOW,RESET,RED);
     int choice;
     scanf("%d",&choice);
-    
     while ((c = getchar()) != '\n');
     if(choice==1){
         int name_flag=0;
@@ -233,22 +286,23 @@ void CustomerDetailsPage(char name[],char phone[],int *persons,int flag) {
             phone_flag=1;
             }
         }
-        if(phone_flag==0 && name_flag==0 && *persons>0){
-        
+        if(phone_flag==0 && name_flag==0 && persons>0){
+            Customerloggedinpage(); 
         }
         else{
-            CustomerDetailsPage(name,phone,persons,1);
+            CustomerDetailsPage(1);
         }
     }
     else{
-        CustomerDetailsPage(name,phone,persons,0);
+        CustomerDetailsPage(0);
         
     }
 
 }
 
-void ManagerLoginPage(char username[],char password[],int flag){
-    CLEAR_SCREEN;
+void ManagerLoginPage(int flag){ 
+    char username[100];char password[100];
+    ClearScreen();;
     printf("%s****************************************************\n",BLUE);
     printf("*                                                  *\n");
     printf("*                %sManager Login Page                %s*\n",RED,BLUE);
@@ -281,12 +335,13 @@ void ManagerLoginPage(char username[],char password[],int flag){
     scanf("%d",&choice);
     while ((c = getchar()) != '\n');
     if(choice!=1){
-        ManagerLoginPage(username,password,0);
+        ManagerLoginPage(0);
     }
 
 }
 
 void Customerloggedinpage(){
+    ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*                  %sWelcome to Taj Hotel                %s*\n",RED,BLUE);
@@ -307,12 +362,41 @@ void Customerloggedinpage(){
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n");
+    printf("\n%s Your Choice : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+
+    if(choice==1){
+
+
+    }
+    else if(choice==2){
+        printMenu();   
+    }
+    else if(choice==3){
+        
+    }
+    else if(choice==4){
+        
+    }
+    else if(choice==5){
+        LoginPage();
+    }
+    else{
+        Customerloggedinpage();
+    }
 
 }
 
+
+
+
+// ____________
 void ManagerLoggedinpage(){
     
-    // CLEAR_SCREEN;
+    ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
@@ -336,7 +420,7 @@ void ManagerLoggedinpage(){
 }
 
 void ManageMenuPage(){
-    // CLEAR_SCREEN;
+    ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
@@ -361,7 +445,7 @@ void ManageMenuPage(){
 }
 
 void ManageTablesPage(){
-    // CLEAR_SCREEN;
+    ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
     printf("*                  %sWelcome, Dear Manager               %s*\n",RED,BLUE);
@@ -399,6 +483,7 @@ int findMax(int revenue[], int size) {
 }
 
 void drawBarGraph(int revenue[], int size) {
+    ClearScreen();
     printf("\n");
     int maxRevenue = findMax(revenue, size);
 
@@ -409,15 +494,19 @@ void drawBarGraph(int revenue[], int size) {
     for (int i = HEIGHT; i > 0; i--) {
 
         if (i % 5 == 0) {
-            printf("%s%4d %s|%s",RED ,(int)(i * maxRevenue / HEIGHT),BLUE,BLINKING_YELLOW); 
+            printf("%s%5d %s|%s",RED ,(int)(i * maxRevenue / HEIGHT),BLUE,BLINKING_YELLOW); 
         } else {
-            printf("%s     |%s",BLUE,BLINKING_YELLOW);
+            printf("%s      |%s",BLUE,BLINKING_YELLOW);
         }
 
         for (int j = 0; j < size; j++) {
             if ((int)(revenue[j] * scale) >= i) {
-                printf(" \xDB "); 
-            } else {
+                
+                if(OS==1) printf(" \xDB ");
+                if(OS==2) printf(" \u2588 ");
+
+            } 
+            else {
                 printf("   "); 
             }
         }
@@ -425,12 +514,12 @@ void drawBarGraph(int revenue[], int size) {
     }
 
     // X axis
-    printf("%s     +",BLUE);
+    printf("%s      +",BLUE);
     for (int j = 0; j < size; j++) {
         printf("---");
     }
     printf("\n");   
-    printf("      %s",RED);
+    printf("       %s",RED);
     for (int j = 0; j < size; j++) {
         printf("%2d ", size - j); 
     }
@@ -444,73 +533,122 @@ void drawBarGraph(int revenue[], int size) {
 // ===============================================================================================================
 
 
+// void print(char msg[100]){
+//     FILE *f;
+//     f=fopen("degub.txt","a+");
+//     fprintf(*f,"%s\n",msg);
+// }
 
 
-int main(){
 
-    // CLEAR_SCREEN;
-    // StartupPage();
-    // int i;
-    // printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
-    // scanf("%d",&i);
-    // printf("\033[0m");
-    // int c;
-    // while ((c = getchar()) != '\n');
-    // if(i==1){
-    //     CLEAR_SCREEN;
-    //     char name[100];
-    //     char phone[10];
-    //     int persons;
-    //     CustomerDetailsPage(name,phone,&persons,0);
-    //     CLEAR_SCREEN;
-    //     Customerloggedinpage();
-    //     int i;
-    //     printf("%s Your Choice : %s%s",BLINKING_YELLOW,RESET,RED);
-    //     scanf("%d",&i);
-    //     int c;
-    //     while ((c = getchar()) != '\n');
-    //     if(i==2){
-    //         CLEAR_SCREEN
-    //         printMenu();
-    //         printf("\n\n");
-    //     }
-    //     else{
-    //         printf("NOTHING ELSE WORKS YET!");
-    //     }      
-    // }
-    // else if(i==2) {
+// int StartUI(){
+
+//     FILE *f;
+//     f=fopen("degub.txt","a+");
+//     fprintf(f,"START!\n");
+
+//     fprintf(f,"OS Selection Page\n");
+//     //OS SELECTION PAGE
+//     OsSelectionPage();
+//     fprintf(f,"Selected OS = %d\n",OS);
+    
+
+//     // STARTUP PAGE AND LOGIN CHOICE
+//     StartupPage();
+
+//     LoginChoicePage:
+//     LoginPage();
+//     int i;
+//     printf("%s Your Choice : %s %s",BLINKING_YELLOW,RESET,RED);
+//     scanf("%d",&i);
+//     printf("\033[0m");
+//     int c;
+//     while ((c = getchar()) != '\n');
+    
+//     //CUSTOMER 
+//     if(i==1){
+//         ClearScreen();
+//         char name[100];
+//         char phone[10];
+//         int persons;
+//         CustomerDetailsPage(name,phone,&persons,0);
+//         //CUSTOMER DETAILS HAVE BEEN TAKEN
+
+//         ClearScreen();
+
+//         //CUSTOMER DASHBOARD
+//         CustomerDashboard:
+//         Customerloggedinpage();
+//         int i;
+//         printf("%s Your Choice : %s%s",BLINKING_YELLOW,RESET,RED);
+//         scanf("%d",&i);
+//         int c;
+//         while ((c = getchar()) != '\n');
+//             //RESERVE TABLE    
+//             if(i==1){
+
+//             }
+//             // PRINT MENU
+//             else if (i==2){
+//                 ClearScreen();
+//                 //call print menu
+//             }
+
+//             else if (i==3) {
+//                 // ORDER FOOD
+//             }
+//             else if(i==4){
+//                 // Retrive Bill
+//             }
+//             else {
+//                 goto loginChoicePage;
+//             }      
+//     }
+
+
+
+
+
+
+
+//     //MANAGER
+//     else if(i==2) {
             
-    //     char username[100];
-    //     char password[100];
-    //     ManagerLoginPage(username,password,0);
-    //     printf("%s\n",username);
-    //     printf("%s",password);
-    //     ManagerLoggedinPageGOTO:
-    //     ManagerLoggedinpage();
-    //     int ch=0;
-    //     scanf("%d",&ch);
-    //     if(ch==1){
-
-    //     }
-    //     else if(ch==2){
+//         char username[100];
+//         char password[100];
+//         ManagerLoginPage(username,password,0);
+//         printf("%s\n",username);
+//         printf("%s",password);
+//         ManagerLoggedinPageGOTO:
+//         ManagerLoggedinpage();
+//         int ch=0;
+//         scanf("%d",&ch);
+//         if(ch==1){
             
-    //     }
-    // }
-    // CLEAR_SCREEN
-    // ManagerLoggedinpage();
-    // ManageTablesPage();
-    // ManageMenuPage();
+//             ManageTablesPage();
+//         }
+//         else if(ch==2){
+            
+//             ManageMenuPage();
+//         }
+//         else if(ch==4){
+//             int revenue[30] = {
+//         120, 180, 150, 200, 250, 300, 350, 400, 320, 280,
+//         220, 180, 140, 100, 60, 50, 340, 130, 100, 2000,
+//         250, 100, 650, 200, 250, 300, 350, 400, 450, 400
+//             };
+
+//             drawBarGraph(revenue, 30);
+
+//         }
+//     }
+
+//     //END
+//     return 0;
+// // }
 
 
-
-     int revenue[30] = {
-        120, 80, 150, 200, 250, 300, 350, 400, 320, 280,
-        220, 180, 140, 100, 60, 50, 340, 130, 240, 100,
-        250, 100, 150, 200, 250, 300, 350, 400, 450, 700
-    };
-
-    drawBarGraph(revenue, 30);
-
+int main (){
+    OsSelectionPage();
     return 0;
 }
-
