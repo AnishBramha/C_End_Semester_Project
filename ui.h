@@ -3,6 +3,10 @@
 
 void ClearScreen();
 
+
+#include "file_handler.h"
+#include "linked_list.h"
+
 // Constants for menu layout
 #define MAX_ITEM_NAME_WIDTH  21
 #define MAX_ITEM_NO_WIDTH     8
@@ -11,9 +15,13 @@ void ClearScreen();
 #define MAX_ALLERGEN_WIDTH   15
 #define MAX_PRICE_WIDTH       7
 
+//Constants for passing heads of linked lists. 
+#define HEADS struct Menu *menuHead, struct Tables *tablesHead, struct CurrentOrders *currentOrdersHead,struct OrderHistory *orderHistoryHead
+#define HEADSFORHFILE struct Menu*, struct Tables *, struct CurrentOrders *,struct OrderHistory *
+#define PASSHEADS menuHead,tablesHead,currentOrdersHead,orderHistoryHead
+
 
 // Constants for Graph
-
 #define DAYS 30
 #define HEIGHT 25
 
@@ -26,12 +34,13 @@ void ClearScreen();
 
 // Function Prototypes
 void logo(void);
-void StartupPage(void);
-void LoginPage(void);
-void CustomerDetailsPage(int flag);
-void ManagerLoginPage(int flag);
-void Customerloggedinpage(void);
-void ManagerLoggedinpage(void);
+void StartupPage(HEADSFORHFILE);
+void OsSelectionPage(HEADSFORHFILE);
+void LoginPage(HEADSFORHFILE);
+void CustomerDetailsPage(int flag,HEADSFORHFILE);
+void ManagerLoginPage(int flag,HEADSFORHFILE);
+void Customerloggedinpage(HEADSFORHFILE);
+void ManagerLoggedinpage(HEADSFORHFILE);
 void menuLogo(void);
 void menuHeader(void);
 void menuFooter(void);
