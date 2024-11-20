@@ -1,37 +1,11 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include<unistd.h>
 #include "ui.h"
-#include "file_handler.h"
-#include "linked_list.h"
+
 
 int OS=1;
-
 void ClearScreen(){
     if (OS==1) system("cls");
     if(OS==2) system("clear");
 }
-
-
-
-// #define MAX_ITEM_NAME_WIDTH  21
-// #define MAX_ITEM_NO_WIDTH    8
-// #define MAX_SPICE_WIDTH      10
-// #define MAX_TYPE_WIDTH       11
-// #define MAX_ALLERGEN_WIDTH   15
-// #define MAX_PRICE_WIDTH      7
-
-// #define DAYS 30
-// #define HEIGHT 25
-
-// void LoginPage();
-
-// #define BLUE "\033[96m"
-// #define RED "\033[91m"
-// #define YELLOW "\033[33m"
-// #define BLINKING_YELLOW "\033[93m"
-// #define RESET "\033[0m"
 
 
 
@@ -162,7 +136,7 @@ void printMenu(HEADS){
     menuFooter();
 }
 
-void viewMenu(HEADS){
+void viewMenu(HEADS,long long OID,int persons){
     ClearScreen();
     printMenu(PASSHEADS);
     printf("\n %s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
@@ -172,10 +146,10 @@ void viewMenu(HEADS){
     while ((c = getchar()) != '\n');
 
     if(choice==5){
-        Customerloggedinpage(PASSHEADS);
+        Customerloggedinpage(PASSHEADS,OID,persons);
     }
     else{
-        viewMenu(PASSHEADS);
+        viewMenu(PASSHEADS,OID,persons);
     }
 }
 // ============================================================================================================================================
@@ -336,13 +310,20 @@ void CustomerDetailsPage(int flag,HEADS) {
             }
         }
         int phone_flag=0;
+        int len=0;
         for (int i = 0; phone[i] != '\0'; i++) {
+            len++;
             if (phone[i] < '0' || phone[i] > '9') { 
             phone_flag=1;
             }
         }
+        if(len!=10){
+            phone_flag=1;
+        }
         if(phone_flag==0 && name_flag==0 && persons>0){
-            Customerloggedinpage(PASSHEADS); 
+            long long int OID;
+            currentOrdersHead=createOrder(name,phone,persons,currentOrdersHead,orderHistoryHead,&OID,tablesHead);
+            Customerloggedinpage(PASSHEADS,OID,persons); 
         }
         else{
             CustomerDetailsPage(1,PASSHEADS);
@@ -395,7 +376,7 @@ void ManagerLoginPage(int flag,HEADS){
 
 }
 
-void Customerloggedinpage(HEADS){
+void Customerloggedinpage(HEADS,long long OID,int persons){
     ClearScreen();
     printf("%s********************************************************\n",BLUE);
     printf("*                                                      *\n");
@@ -424,11 +405,11 @@ void Customerloggedinpage(HEADS){
     while ((c = getchar()) != '\n');
 
     if(choice==1){
-
+        ReserveTablePage(PASSHEADS,OID,persons);
 
     }
     else if(choice==2){
-        viewMenu(PASSHEADS);   
+        viewMenu(PASSHEADS,OID,persons);   
     }
     else if(choice==3){
         
@@ -440,12 +421,36 @@ void Customerloggedinpage(HEADS){
         LoginPage(PASSHEADS);
     }
     else{
-        Customerloggedinpage(PASSHEADS);
+        Customerloggedinpage(PASSHEADS,OID,persons);
     }
 
 }
 
+void ReserveTablePage(HEADS,long long OID,int persons){
+    ClearScreen();
+    long tableNO;
+    tablesHead=reserveTable(OID,persons,tablesHead,currentOrdersHead,&tableNO);
+    if(tableNO==-1){
+        printf("%s****************************************************\n",BLUE);
+        printf("*                                                  *\n");
+        printf("*   %sApologies, but we are currently fully booked%s   *\n",BLINKING_YELLOW,BLUE);
+        printf("*                                                  *\n");
+        printf("****************************************************%s\n",RESET);
+    }
+    else{
+        printf("%s****************************************************\n",BLUE);
+        printf("*                                                  *\n");
+        printf("*               %sBOOKING SUCCESFULL!!%s               *\n",BLINKING_YELLOW,BLUE);
+        printf("*                                                  *\n");
+        printf("              %sYour Table Number: %ld %s               \n",BLINKING_YELLOW,tableNO,BLUE);
+        printf("*                                                  *\n");
+        printf("*      %sHoping you have a great time with us!%s       *\n",BLINKING_YELLOW,BLUE);
+        printf("*                                                  *\n");
+        printf("****************************************************%s\n",RESET);
 
+    }
+
+}
 
 
 // ____________
