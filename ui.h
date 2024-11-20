@@ -3,9 +3,13 @@
 
 void ClearScreen();
 
-
 #include "file_handler.h"
 #include "linked_list.h"
+#include "customer.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include<unistd.h>
 
 // Constants for menu layout
 #define MAX_ITEM_NAME_WIDTH  21
@@ -39,7 +43,8 @@ void OsSelectionPage(HEADSFORHFILE);
 void LoginPage(HEADSFORHFILE);
 void CustomerDetailsPage(int flag,HEADSFORHFILE);
 void ManagerLoginPage(int flag,HEADSFORHFILE);
-void Customerloggedinpage(HEADSFORHFILE);
+void Customerloggedinpage(HEADSFORHFILE,long long OID,int persons);
+void ReserveTablePage(HEADS,long long OID,int persons);
 void ManagerLoggedinpage(HEADSFORHFILE);
 void menuLogo(void);
 void menuHeader(void);
