@@ -1,6 +1,6 @@
 #include "ui.h"
 
-
+ 
 int OS=1;
 void ClearScreen(){
     if (OS==1) system("cls");
