@@ -7,8 +7,9 @@
 
 Table reserve;
 Order new_Order={0};
-
-CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrders* currentOrders, OrderHistory* orderHistory, long int* orderID, Tables* tables){
+// LONG LONG
+CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrders* currentOrders, OrderHistory* orderHistory, long long int* orderID, Tables* tables){
+    
     *orderID=lenCurrentOrders(currentOrders)+lenOrderHistory(orderHistory)+1;
     char* time,*date;
 
@@ -35,7 +36,7 @@ CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrd
     strcpy(new_Order.orderTime,time);
     strcpy(new_Order.orderDate,date);
 
-    reserveTable(*orderID,people,tables,currentOrders,&futureTableNo);
+    // reserveTable(*orderID,people,tables,currentOrders,&futureTableNo);
 
     new_Order.tableNo=futureTableNo;
 
@@ -59,12 +60,15 @@ CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrd
     }
     temp->next=new_node;
 
-    formatCurrentOrders(currentOrders);
+    // formatCurrentOrders(currentOrders);
+    // CALL CSV
+    updateCurrentOrders(currentOrders);
 
     return currentOrders;
 }
 
 Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentOrders* currentOrders, long int* futureTableNo){
+    printf("FROM RESERVE TABLE");
     Tables* tempTable=tables;
     int restaurant_full=0;
 
@@ -73,24 +77,26 @@ Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentO
             *futureTableNo=tempTable->table.tableNo;
             tempTable->table.available=0;
             restaurant_full=1;
+            break;
         }
-        else
-            continue;
 
         tempTable=tempTable->next;
     }
 
     if(restaurant_full==0){
         fprintf(stderr,"\a\nSORRY!WE DO NOT HAVE ANY ACCOMODATIONS AVAILABLE!\n");
-        return NULL;
+        *futureTableNo=-1;
+        return tables;
     }
 
-    formatTables(tables);
+    // formatTables(tables);
+    updateTables(tables);
+    printf("FROM RESERVE TABLE");
     return tables;
     
 }
 
-CurrentOrders* makeOrder(long long int itemID, CurrentOrders* currentOrders, long int orderID){
+CurrentOrders* makeOrder(long long int itemID, CurrentOrders* currentOrders, long long int orderID){
     CurrentOrders* temp=currentOrders;
     while(temp!=NULL){
           if(temp->order.orderID==orderID){
@@ -104,6 +110,7 @@ CurrentOrders* makeOrder(long long int itemID, CurrentOrders* currentOrders, lon
           }
         temp=temp->next;
     }
+    updateCurrentOrders(currentOrders);
     return currentOrders;
 }
 
