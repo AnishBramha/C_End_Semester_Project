@@ -17,7 +17,7 @@ void ClearScreen();
 #define MAX_SPICE_WIDTH      10
 #define MAX_TYPE_WIDTH        11
 #define MAX_ALLERGEN_WIDTH   15
-#define MAX_PRICE_WIDTH       7
+#define MAX_PRICE_WIDTH       7 
 
 //Constants for passing heads of linked lists. 
 #define HEADS struct Menu *menuHead, struct Tables *tablesHead, struct CurrentOrders *currentOrdersHead,struct OrderHistory *orderHistoryHead
@@ -34,15 +34,19 @@ void ClearScreen();
 #define RED "\033[91m"
 #define YELLOW "\033[33m"
 #define BLINKING_YELLOW "\033[93m"
+#define GREEN "\033[92m"
 #define RESET "\033[0m"
 
 // Function Prototypes
 void logo(void);
 void StartupPage(HEADSFORHFILE);
+
+void GenerateBill(HEADS, long long orderID,int persons);
 void OsSelectionPage(HEADSFORHFILE);
 void LoginPage(HEADSFORHFILE);
 void CustomerDetailsPage(int flag,HEADSFORHFILE);
 void ManagerLoginPage(int flag,HEADSFORHFILE);
+void orderDishesPage(HEADS,long long OID,int persons);
 void Customerloggedinpage(HEADSFORHFILE,long long OID,int persons);
 void ReserveTablePage(HEADS,long long OID,int persons);
 void ManagerLoggedinpage(HEADSFORHFILE);
