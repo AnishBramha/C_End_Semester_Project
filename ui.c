@@ -1,7 +1,7 @@
 #include "ui.h"
 
- 
-int OS=1;
+
+int OS=2;
 void ClearScreen(){
     if (OS==1) system("cls");
     if(OS==2) system("clear");
@@ -219,6 +219,8 @@ void OsSelectionPage(HEADS){
     printf("\n %sYour Choice: %s",BLINKING_YELLOW,RESET);
     
     scanf("%d",&OS);
+    int c;
+    while((c=getchar())!='\n'){}
     if(OS!=1 && OS!=2){
         OsSelectionPage(PASSHEADS);
     }
@@ -399,7 +401,7 @@ void Customerloggedinpage(HEADS,long long OID,int persons){
     printf("********************************************************\n");
     printf("\n");
     printf("\n%s Your Choice : %s",BLINKING_YELLOW,RESET);
-    int choice;
+    int choice=0;
     scanf("%d",&choice);
     int c;
     while ((c = getchar()) != '\n');
@@ -412,10 +414,11 @@ void Customerloggedinpage(HEADS,long long OID,int persons){
         viewMenu(PASSHEADS,OID,persons);   
     }
     else if(choice==3){
+        orderDishesPage(PASSHEADS,OID,persons);
         
     }
     else if(choice==4){
-        
+        GenerateBill(PASSHEADS,OID,persons);
     }
     else if(choice==5){
         LoginPage(PASSHEADS);
@@ -429,15 +432,51 @@ void Customerloggedinpage(HEADS,long long OID,int persons){
 void ReserveTablePage(HEADS,long long OID,int persons){
     ClearScreen();
     long tableNO;
+    int already_reserved_flag=0;
+    CurrentOrders* tempCurrentOrders=currentOrdersHead;
+    while(1==1){
+        
+        if(tempCurrentOrders->order.orderID==(long)OID){
+            if(tempCurrentOrders->order.tableNo!=0){
+                already_reserved_flag=1;
+                break;
+            }
+        }
+        if(tempCurrentOrders->next==NULL){
+            break;
+        }
+        tempCurrentOrders=tempCurrentOrders->next;
+    }
+    if(already_reserved_flag==1){
+        tableNO=tempCurrentOrders->order.tableNo;
+        
+    }
+    else{
     tablesHead=reserveTable(OID,persons,tablesHead,currentOrdersHead,&tableNO);
+    }
+
+    tempCurrentOrders=currentOrdersHead;
+    while(1==1){
+        if(tempCurrentOrders->order.orderID==OID){
+            tempCurrentOrders->order.tableNo=tableNO;
+            break;
+        }
+        if(tempCurrentOrders->next==NULL){
+            break;
+        }
+        tempCurrentOrders=tempCurrentOrders->next;
+    }
+    updateCurrentOrders(currentOrdersHead);
+
     if(tableNO==-1){
         printf("%s****************************************************\n",BLUE);
         printf("*                                                  *\n");
-        printf("*   %sApologies, but we are currently fully booked%s   *\n",BLINKING_YELLOW,BLUE);
+        printf("*   %sApologies, but we are currently fully booked%s     *\n",BLINKING_YELLOW,BLUE);
         printf("*                                                  *\n");
         printf("****************************************************%s\n",RESET);
     }
-    else{
+    
+    else{ 
         printf("%s****************************************************\n",BLUE);
         printf("*                                                  *\n");
         printf("*               %sBOOKING SUCCESFULL!!%s               *\n",BLINKING_YELLOW,BLUE);
@@ -449,8 +488,97 @@ void ReserveTablePage(HEADS,long long OID,int persons){
         printf("****************************************************%s\n",RESET);
 
     }
+    printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    Customerloggedinpage(PASSHEADS,OID,persons);
 
 }
+
+void orderDishesPage(HEADS,long long OID,int persons){
+    ClearScreen();
+    printf("\n");
+    int alreadyReserved=0;
+    CurrentOrders *tempCurrentOrders=currentOrdersHead;
+    while (1==1){
+        if(tempCurrentOrders->order.orderID==OID){
+            if(tempCurrentOrders->order.tableNo!=0){
+                alreadyReserved=1;
+            }
+        }
+        if(tempCurrentOrders->next==NULL){
+            break;
+        }
+        tempCurrentOrders=tempCurrentOrders->next;
+    }    
+    if(alreadyReserved==1){
+    printMenu(PASSHEADS);
+        while(1==1){
+            printf("%s Enter Item ID you want to order (Without Leading Zeroes) or press \'0\' to stop ordering : %s",BLINKING_YELLOW,RESET);
+            long long ItemID;
+            int inputStatus=scanf("%lld",&ItemID);
+            if (inputStatus != 1) {
+            while (getchar() != '\n');
+            orderDishesPage(PASSHEADS,OID,persons);
+            break;
+            }
+            if(ItemID==0){
+                Customerloggedinpage(PASSHEADS,OID,persons);
+                break;
+            }
+            int isValid=0;
+            Menu *tempMenu=menuHead;
+            while(tempMenu->next!=NULL){
+                
+                
+                if(tempMenu->item.itemID%10000==ItemID){
+                    isValid=1;
+                }
+                tempMenu=tempMenu->next;
+            }
+            if(tempMenu->item.itemID==ItemID) { isValid=1; }
+            if(isValid==1){
+            currentOrdersHead= makeOrder(ItemID,currentOrdersHead,OID);
+            
+            printf("%s-> Item with itemID:%lld ordered Succesfully%s\n",BLUE,ItemID,RESET);
+            }
+            else{
+                printf("%s-> Enter Valid Item ID%s\n",RED,RESET);
+            }
+
+        }
+    }
+    else{
+        printf("%s****************************************************\n",BLUE);
+        printf("*                                                  *\n");
+        printf("*       %sPlease Reserve a Seat Before Ordering%s     *\n",BLINKING_YELLOW,BLUE);
+        printf("*                                                  *\n");
+        printf("****************************************************%s\n",RESET);   
+        printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+        int choice;
+        scanf("%d",&choice);
+        int c;
+        while ((c = getchar()) != '\n');
+        if(choice==5){
+            Customerloggedinpage(PASSHEADS,OID,persons);
+        }
+        else{
+            orderDishesPage(PASSHEADS,OID,persons);
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
 
 
 // ____________
@@ -595,6 +723,96 @@ void drawBarGraph(int revenue[], int size) {
 
 
 
+void GenerateBill(HEADS ,long long orderID,int persons) {
+    ClearScreen();
+    // Locate the order in the CurrentOrders linked list
+    CurrentOrders* currentOrderNode = currentOrdersHead;
+    while (currentOrderNode != NULL) {
+        if (currentOrderNode->order.orderID == orderID) {
+            break;
+        }
+        currentOrderNode = currentOrderNode->next;
+    }
+
+    if (currentOrderNode == NULL) {
+        printf("Order with ID %lld not found.\n", orderID);
+        return;
+    }
+
+    Order* order = &currentOrderNode->order;
+
+    // Print bill header
+    printf("%s********************************************************\n", BLUE);
+    printf("*                                                      *\n");
+    printf("*                        %sINVOICE                       %s*\n", RED, BLUE);
+    printf("*                       %sTAJ HOTEL                      %s*\n", RED, BLUE);
+    printf("*                                                      *\n");
+    printf("*                                                      *\n");
+    printf("*  %sCustomer Details                                    %s*\n", YELLOW, BLUE);
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+    printf("*  %-15s : %-34ld%s*\n", "Order ID", order->orderID, BLUE);
+    printf("*  %-15s : %-34s%s*\n", "Customer Name", order->name, BLUE);
+    printf("*  %-15s : %-34s%s*\n", "Phone", order->phone, BLUE);
+    printf("*  %-15s : %-34ld%s*\n", "Table Number", order->tableNo, BLUE);
+    printf("*  %-15s : %-34s%s*\n", "Order Date", order->orderDate, BLUE);
+    printf("*  %-15s : %-34s%s*\n", "Order Time", order->orderTime, BLUE);
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+
+    printf("*  %sItem Name                          Price ₹          %s*\n", YELLOW, BLUE);
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+
+    float grandTotal = 0.0;
+
+    // Iterate over itemIDs in the order and fetch details from the menu
+    for (int i = 0; i < 100 && order->itemIDs[i] != 0; i++) {
+        long long int itemID = order->itemIDs[i];
+
+        // Search for the item in the menu linked list
+        Menu* currentMenuNode = menuHead;
+        while (currentMenuNode != NULL) {
+            if (currentMenuNode->item.itemID % 10000 == itemID) {
+                // Item found
+                printf("*  %-34s  %-16.2f%s*\n", currentMenuNode->item.name, currentMenuNode->item.price, BLUE);
+                grandTotal += currentMenuNode->item.price;
+                break;
+            }
+            currentMenuNode = currentMenuNode->next;
+        }
+    }
+
+    // Calculate taxes
+    float sgst = grandTotal * 0.09; // 9% SGST
+    float cgst = grandTotal * 0.09; // 9% CGST
+    float totalWithTax = grandTotal + sgst + cgst;
+
+    // Print the total
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+    printf("*%s  %-33s   %-16.2f%s*\n",RESET, "Subtotal", grandTotal, BLUE);
+    printf("*%s  %-33s   %-16.2f%s*\n",RESET, "SGST (9%)", sgst, BLUE);
+    printf("*%s  %-33s   %-16.2f%s*\n",RESET, "CGST (9%)", cgst, BLUE);
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+    printf("*%s  %-33s   %-16.2f%s*\n", GREEN, "GRAND TOTAL", totalWithTax, BLUE);
+    printf("*%s------------------------------------------------------%s*\n", YELLOW, BLUE);
+    printf("*                                                      *\n");
+    printf("*   %sThank you for dining with us! Have a great day!    %s*\n", RED, BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    printf(RESET);
+     printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+        int choice;
+        scanf("%d",&choice);
+        int c;
+        while ((c = getchar()) != '\n');
+        if(choice==5){
+            Customerloggedinpage(PASSHEADS,orderID,persons);
+        }
+        else{
+            orderDishesPage(PASSHEADS,orderID,persons);
+        }
+}
+
+
+
 int main (){
     
     struct Menu *menuHead=loadMenu();
@@ -602,6 +820,11 @@ int main (){
     struct OrderHistory *orderHistoryHead=loadOrderHistory();
     struct CurrentOrders *currentOrdersHead=loadCurrentOrders();
     
-    OsSelectionPage(PASSHEADS);
+    int arr[30]={1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,20,20,10,5,4,3,2,1,10,10};
+    drawBarGraph(arr,30);
+
+    // OsSelectionPage(PASSHEADS);
+    // GenerateBill(currentOrdersHead,menuHead,6);
     return 0;
 }
+
