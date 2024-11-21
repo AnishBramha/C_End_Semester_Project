@@ -68,9 +68,10 @@ CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrd
 }
 
 Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentOrders* currentOrders, long int* futureTableNo){
-    printf("FROM RESERVE TABLE");
     Tables* tempTable=tables;
     int restaurant_full=0;
+    int already_reserved_flag=0;
+   
 
     while(tempTable->next!=NULL){
         if(tempTable->table.available==1 && tempTable->table.capacity>=people){
@@ -89,9 +90,8 @@ Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentO
         return tables;
     }
 
-    // formatTables(tables);
+    
     updateTables(tables);
-    printf("FROM RESERVE TABLE");
     return tables;
     
 }
