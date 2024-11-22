@@ -56,5 +56,15 @@ void menuFooter(void);
 void menuRow(const char *item_name, const char *item_no, const char *spice, const char *type, const char *allergens, const char *price,int veg);
 int get_wrapped_lines(const char *text, int max_width);
 void print_wrapped_text(const char *text, int max_width, int line);
-
+void searchByNamePage(HEADS,long long OID,int persons);
+void searchByPriceRange(HEADS,long long OID,int persons);
+void filterByAllergens(HEADS,long long OID,int persons);
+void ManageMenuPage(HEADS);
+void filterByVeg(HEADS,long long OID,int persons);
+void ManageTablesPage(HEADS);
+void addTablePage(HEADS);
+void removeTablePage(HEADS);
+void updateItemPage(HEADS);
+void removeItemPage(HEADS);
+void addItemPage(HEADS);
 #endif
