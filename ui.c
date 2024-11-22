@@ -139,13 +139,31 @@ void printMenu(HEADS){
 void viewMenu(HEADS,long long OID,int persons){
     ClearScreen();
     printMenu(PASSHEADS);
-    printf("\n %s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+    printf("\n %s The Following Options are available: %s",BLINKING_YELLOW,RESET);
+    printf("\n %s 1 -> Search by Item Name %s",BLUE,RESET);
+    printf("\n %s 2 -> Filter by Price Range %s",BLUE,RESET);
+    printf("\n %s 3 -> Filter by Allergens %s",BLUE,RESET);
+    printf("\n %s 4 -> Filter by Veg / Nonveg %s",BLUE,RESET);
+    printf("\n %s 5 -> Go back %s",BLUE,RESET);
+    printf("\n %s Your Choice :  %s",BLINKING_YELLOW,RESET);
+    
     int choice;
     scanf("%d",&choice);
     int c;
     while ((c = getchar()) != '\n');
-
-    if(choice==5){
+    if(choice==1){
+        searchByNamePage(PASSHEADS,OID,persons);
+    }
+    else if(choice==2){
+        searchByPriceRange(PASSHEADS,OID,persons);
+    }
+    else if(choice==3){
+        filterByAllergens(PASSHEADS,OID,persons);
+    }
+    else if(choice==4){
+        filterByVeg(PASSHEADS,OID,persons);
+    }
+    else if(choice==5){
         Customerloggedinpage(PASSHEADS,OID,persons);
     }
     else{
@@ -265,6 +283,8 @@ void LoginPage(HEADS) {
     
 }
 
+
+
 void CustomerDetailsPage(int flag,HEADS) {  
     char name[100];char phone[100];int persons=1;
     ClearScreen();
@@ -334,46 +354,6 @@ void CustomerDetailsPage(int flag,HEADS) {
     else{
         CustomerDetailsPage(0,PASSHEADS);
         
-    }
-
-}
-
-void ManagerLoginPage(int flag,HEADS){ 
-    char username[100];char password[100];
-    ClearScreen();;
-    printf("%s****************************************************\n",BLUE);
-    printf("*                                                  *\n");
-    printf("*                %sManager Login Page                %s*\n",RED,BLUE);
-    printf("*                                                  *\n");
-    printf("*     %sPlease provide the following details:        %s*\n",RED,BLUE);
-    
-    if(flag==1){
-        
-        printf("*              %sEnter Correct Detials               %s*\n",RED,BLUE);
-    }
-    printf("*                                                  *\n");
-    printf("****************************************************\n");
-    
-    printf("*                                                  *\n");
-    printf("*                                                  *\n");
-    printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*  %s Username : %s",YELLOW,RED);
-  
-    scanf("%[^\n]",username);
-    int c;
-    while ((c = getchar()) != '\n');
-    printf("\n\n%s*                                                  *\n",BLUE);
-    printf("*                                                  *\n");
-    printf("*                                                  *\n");
-    printf("****************************************************\033[F\033[F*  %s Password : %s",YELLOW,RED);
-    scanf("%[^\n]",password);
-    
-    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s",BLINKING_YELLOW,RESET);
-    int choice;
-    scanf("%d",&choice);
-    while ((c = getchar()) != '\n');
-    if(choice!=1){
-        ManagerLoginPage(0,PASSHEADS);
     }
 
 }
@@ -571,17 +551,178 @@ void orderDishesPage(HEADS,long long OID,int persons){
 
 }
 
+void searchByNamePage(HEADS,long long OID,int persons){
+    ClearScreen();
+    char spaces[]="                                                                      ";
+    printf("**********************************************************\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("**********************************************************\n%s\n%s\033[F\033[F\033[F\033[F* %s Enter the name of the dish: %s ",spaces,spaces,YELLOW,RED);
+    char dishName[50];
+    scanf("%[^\n]",dishName);
+    printf("\n\n\n");
+    viewMenu(PASSHEADS,OID,persons); //FOR NOW JUST TO BACK TO ORIGINAL PAGE
+
+}
+
+void searchByPriceRange(HEADS,long long OID,int persons){
+    ClearScreen();
+    char spaces[]="                                                                      ";
+    printf(BLUE"**********************************************************\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("**********************************************************\n%s\n%s\033[F\033[F\033[F\033[F* %s Enter Minimum Price: %s ",spaces,spaces,YELLOW,RED);
+    float min;
+    if(scanf("%f",&min)!=1){
+        while(getchar()!='\n');
+        searchByPriceRange(PASSHEADS,OID,persons);
+    }
+
+    
+    printf(BLUE"\n\n*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("**********************************************************\n%s\n%s\033[F\033[F\033[F\033[F* %s Enter Maximum Price: %s ",spaces,spaces,YELLOW,RED);
+    float max;
+    if(scanf("%f",&max)!=1){
+        while(getchar()!='\n');
+        searchByPriceRange(PASSHEADS,OID,persons);
+    }
+    
+    printf("\n\nMin: %f   Max: %f\n\n",min,max);
+    
+    printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    if(choice==5){
+        viewMenu(PASSHEADS,OID,persons); 
+ 
+    }
+    else{
+        searchByPriceRange(PASSHEADS,OID,persons);
+    }
+}
 
 
+void filterByAllergens(HEADS,long long OID,int persons){
+    ClearScreen();
+    char spaces[]="                                                                      ";
+    printf(BLUE"**********************************************************\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("*                                                        *\n");
+    printf("**********************************************************\n%s\n%s\033[F\033[F\033[F\033[F* %s Enter Allergen you want to filter: %s ",spaces,spaces,YELLOW,RED);
+ 
+    char allergen[50];
+    if(scanf("%[^\n]",allergen)!=1){
+        while(getchar()!='\n');   
+        filterByAllergens(PASSHEADS,OID,persons);
+    }
+    while(getchar()!='\n');
 
+    
+    printf("\n\nAllergen: %s\n\n",allergen);
+    
+    printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    if(choice==5){
+        viewMenu(PASSHEADS,OID,persons); 
+ 
+    }
+    else{
+        filterByAllergens(PASSHEADS,OID,persons);
+    }
+}
 
+void filterByVeg(HEADS,long long OID,int persons){
+    ClearScreen();
+    printf("%s********************************************************\n",BLUE);
+    printf("*                                                      *\n");
+    printf("*                  %s ENTER YOUR CHOICE %s                 *\n",RESET,BLUE);
+    printf("*                  %s 1 -> VEG %s                          *\n",GREEN,BLUE);
+    printf("*                  %s 2 -> NON-VEG %s                      *\n",RED,BLUE);
+    printf("*                  %s 3 -> EGG %s                          *\n",BLINKING_YELLOW,BLUE);
+    printf("*                                                      *\n");
+    printf("********************************************************\n");
+    
+    printf("\n %s Your Choice :  %s",BLINKING_YELLOW,RESET);
+    int vegOrNonVeg;
+    scanf("%d",&vegOrNonVeg);
+    
 
+    
+    printf("\nVeg? : %d\n",vegOrNonVeg);
+    
+    printf("\n%s Press 5 to go back : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    if(choice==5){
+        viewMenu(PASSHEADS,OID,persons); 
+ 
+    }
+    else{
+        filterByVeg(PASSHEADS,OID,persons);
+    }
 
+}
 
 
 
 
 // ____________
+
+void ManagerLoginPage(int flag,HEADS){ 
+    char username[100];char password[100];
+    ClearScreen();;
+    printf("%s****************************************************\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                %sManager Login Page                %s*\n",RED,BLUE);
+    printf("*                                                  *\n");
+    printf("*     %sPlease provide the following details:        %s*\n",RED,BLUE);
+    
+    if(flag==1){
+        
+        printf("*              %sEnter Correct Detials               %s*\n",RED,BLUE);
+    }
+    printf("*                                                  *\n");
+    printf("****************************************************\n");
+    
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Username : %s",YELLOW,RED);
+  
+    scanf("%[^\n]",username);
+    int c;
+    while ((c = getchar()) != '\n');
+    printf("\n\n%s*                                                  *\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Password : %s",YELLOW,RED);
+    scanf("%[^\n]",password);
+    
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice!=1){
+        ManagerLoginPage(0,PASSHEADS);
+    }
+    else{
+        ManagerLoggedinpage(PASSHEADS);
+    }
+
+}
+
 void ManagerLoggedinpage(HEADS){
     
     ClearScreen();
@@ -604,7 +745,30 @@ void ManagerLoggedinpage(HEADS){
     printf("*           %sPress 5 to Go Back to the Login Page       %s*\n",RED,BLUE);
     printf("*                                                      *\n");
     printf("********************************************************\n");
-    printf("\n");
+    printf("\n%sYour Choice : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    if(choice==5){
+        LoginPage(PASSHEADS);
+    }
+    else if(choice==4){
+        ManagerLoggedinpage(PASSHEADS);//CHANGEEEEEEEEE
+    }
+    
+    else if(choice==3){
+        ManagerLoggedinpage(PASSHEADS);//CHANGEEEEEEEEE
+    }
+    else if(choice==2){
+        ManageMenuPage(PASSHEADS);
+    }
+    else if(choice==1){
+        ManageTablesPage(PASSHEADS);
+    }
+    else{
+        ManagerLoggedinpage(PASSHEADS);
+    }
 }
 
 void ManageMenuPage(HEADS){
@@ -629,8 +793,212 @@ void ManageMenuPage(HEADS){
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n");
+    printf("\n%s Your Choice : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    
+    if(choice==1){
+        addItemPage(PASSHEADS);
+    }
+    else if(choice==2){
+        removeItemPage(PASSHEADS);
+    }
+    else if(choice==3){
+        updateItemPage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else{
+        ManageMenuPage(PASSHEADS);
+    }
    
 }
+void addItemPage(HEADS){
+      ClearScreen();
+    printf("%s******************************************************\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                %sAdd an Item                         %s*\n",RED,BLUE);
+    printf("*                                                    *\n");
+    printf("******************************************************\n");
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s Item Number : %s",YELLOW,RED);
+    long int tableNO;
+    if(scanf("%ld",&tableNO)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+    int c;
+    while ((c = getchar()) != '\n');
+    printf("\n\n%s*                                                    *\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s Name : %s",YELLOW,RED);
+    char name[100];
+    if(scanf("%[^\n]",name)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+    while ((c = getchar()) != '\n');
+
+    printf("\n\n%s*                                                    *\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s Spiciness : %s",YELLOW,RED);
+    int spice;
+    if(scanf("%d",&spice)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+    while ((c = getchar()) != '\n');
+    
+    printf("\n\n%s*                                                    *\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s Veg/Egg/NonVeg (0/1/2) : %s",YELLOW,RED);
+    int veg;
+    if(scanf("%d",&veg)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+    while ((c = getchar()) != '\n');
+
+    printf("\n\n%s*                                                    *\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s Starter/MainCourse/Dessert/Beverage(1/2/3/4) : %s",YELLOW,RED);
+    int type;
+    if(scanf("%d",&type)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+    while ((c = getchar()) != '\n');
+
+    printf("\n\n%s*                                                    *\n",BLUE);
+    printf("*                                                    *\n");
+    printf("*                                                    *\n");
+    printf("******************************************************\033[F\033[F*  %s New Price : %s",YELLOW,RED);
+    float price;
+    if(scanf("%f",&price)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addItemPage(PASSHEADS);
+    }
+
+    while ((c = getchar()) != '\n');
+
+
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter , 5 to go back: %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        ManageMenuPage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManageMenuPage(PASSHEADS);
+    }
+    else{
+        addTablePage(PASSHEADS);
+    }
+
+
+}
+
+void removeItemPage(HEADS){
+      ClearScreen();
+    printf("%s****************************************************\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                %sRemove a item                     %s*\n",RED,BLUE);
+    printf("*                                                  *\n");
+    printf("****************************************************\n");
+    
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Item Number : %s",YELLOW,RED);
+    long int itemNO;
+    if(scanf("%ld",&itemNO)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        removeItemPage(PASSHEADS);
+    }
+    int c;
+    while ((c = getchar()) != '\n');
+    
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter , 5 to go back: %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        ManageMenuPage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManageMenuPage(PASSHEADS);
+    }
+    else{
+        removeItemPage(PASSHEADS);
+    }
+}
+
+void updateItemPage(HEADS){
+      ClearScreen();
+    printf("%s****************************************************\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                %sUpdate a Item                      %s*\n",RED,BLUE);
+    printf("*                                                  *\n");
+    printf("****************************************************\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Item Number : %s",YELLOW,RED);
+    long int itemNO;
+    if(scanf("%ld",&itemNO)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        updateItemPage(PASSHEADS);
+    }
+    int c;
+    while ((c = getchar()) != '\n');
+    printf("\n\n%s*                                                  *\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s New Price : %s",YELLOW,RED);
+    float price;
+    if(scanf("%f",&price)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        updateItemPage(PASSHEADS);
+    }
+
+    while ((c = getchar()) != '\n');
+    
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter , 5 to go back: %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        ManageMenuPage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManageMenuPage(PASSHEADS);
+    }
+    else{
+        updateItemPage(PASSHEADS);
+    }
+
+}
+
+
 
 void ManageTablesPage(HEADS){
     ClearScreen();
@@ -650,9 +1018,108 @@ void ManageTablesPage(HEADS){
     printf("*                                                      *\n");
     printf("********************************************************\n");
     printf("\n");
+    printf("\n%s Your Choice : %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    int c;
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        addTablePage(PASSHEADS);
+    }
+    else if(choice==2){
+        removeTablePage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else{
+        ManageTablesPage(PASSHEADS);
+    }
    
 }
+void removeTablePage(HEADS){
+    ClearScreen();
+    printf("%s****************************************************\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                %sRemove A table                    %s*\n",RED,BLUE);
+    printf("*                                                  *\n");
+    printf("****************************************************\n");
+    
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Table Number : %s",YELLOW,RED);
+    long int tableNO;
+    if(scanf("%ld",&tableNO)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        removeTablePage(PASSHEADS);
+    }
+    int c;
+    while ((c = getchar()) != '\n');
+    
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter , 5 to go back: %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else{
+        removeTablePage(PASSHEADS);
+    }
 
+}
+void addTablePage(HEADS){
+    ClearScreen();
+    printf("%s****************************************************\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                %sAdd A table                       %s*\n",RED,BLUE);
+    printf("*                                                  *\n");
+    printf("****************************************************\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Table Number : %s",YELLOW,RED);
+    long int tableNO;
+    if(scanf("%ld",&tableNO)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addTablePage(PASSHEADS);
+    }
+    int c;
+    while ((c = getchar()) != '\n');
+    printf("\n\n%s*                                                  *\n",BLUE);
+    printf("*                                                  *\n");
+    printf("*                                                  *\n");
+    printf("****************************************************\033[F\033[F*  %s Capacity : %s",YELLOW,RED);
+    long int capacity;
+    if(scanf("%ld",&capacity)!=1){
+        int c;
+        while ((c = getchar()) != '\n');
+        addTablePage(PASSHEADS);
+    }
+
+    while ((c = getchar()) != '\n');
+    
+    printf("\n\n\n%s Enter 1 to confirm Details , 0 to Re-enter , 5 to go back: %s",BLINKING_YELLOW,RESET);
+    int choice;
+    scanf("%d",&choice);
+    while ((c = getchar()) != '\n');
+    if(choice==1){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else if(choice==5){
+        ManagerLoggedinpage(PASSHEADS);
+    }
+    else{
+        addTablePage(PASSHEADS);
+    }
+
+}
 
 
 // ===========================================================================================================================================
@@ -807,7 +1274,7 @@ void GenerateBill(HEADS ,long long orderID,int persons) {
             Customerloggedinpage(PASSHEADS,orderID,persons);
         }
         else{
-            orderDishesPage(PASSHEADS,orderID,persons);
+            GenerateBill(PASSHEADS,orderID,persons);
         }
 }
 
@@ -820,11 +1287,10 @@ int main (){
     struct OrderHistory *orderHistoryHead=loadOrderHistory();
     struct CurrentOrders *currentOrdersHead=loadCurrentOrders();
     
-    int arr[30]={1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,20,20,10,5,4,3,2,1,10,10};
-    drawBarGraph(arr,30);
+    // int arr[30]={1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,20,20,10,5,4,3,2,1,10,10};
+    // drawBarGraph(arr,30);
 
-    // OsSelectionPage(PASSHEADS);
+    OsSelectionPage(PASSHEADS);
     // GenerateBill(currentOrdersHead,menuHead,6);
     return 0;
 }
-
