@@ -10,7 +10,7 @@ Menu* searchAllergens(char* allergen, Menu* menu);          // filtering as per 
 
 float totalRevenue(char* startDate, char* endDate, OrderHistory* orderHistory, int* totalOrders); // returns totalRevenue and changes the pointer's value of total orders
 float averageRevenuePerDay(OrderHistory* orderHistory, int* totalOrders); // Returns today's sales data along with total Orders made today
-float averageRevenueInLast30Days(OrderHistory* orderHistory, int* totalOrders ); // returns past 1 month sales data along with total Orders made today
+float averageRevenueInLast30Days(OrderHistory* orderHistory, int* totalOrders ); // returns past 1 month sales data along with total Orders made in 30 days
 void past30DaysData(OrderHistory* orderHistory, int data[30]); // makes changes in data array provided. (as it will also get reflect back to the caller). And return the total revenue
 
 #endif
