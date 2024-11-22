@@ -5,6 +5,7 @@
 
 Menu* searchItemName(char* name, Menu* menu); // returns pointer to Menu struct with item details
 Menu* searchVegEggNon(int code, Menu* menu);                // these three functions return pointer to head of 
+Menu* searchCourse(int code, Menu* menu); 
 Menu* searchItemPrice(float min, float max, Menu* menu);    // a new linked list, which is made after
 Menu* searchAllergens(char* allergen, Menu* menu);          // filtering as per the given parameter
 
