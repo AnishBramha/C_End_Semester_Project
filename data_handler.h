@@ -9,8 +9,10 @@ Menu* searchItemPrice(float min, float max, Menu* menu);    // a new linked list
 Menu* searchAllergens(char* allergen, Menu* menu);          // filtering as per the given parameter
 
 float totalRevenue(char* startDate, char* endDate, OrderHistory* orderHistory);
-float averageRevenuePerDay(OrderHistory* orderHistory);
-float averageRevenuePerWeek(OrderHistory* orderHistory);
-float averageRevenueInLast30Days(OrderHistory* orderHistory);
+float averageRevenuePerDay(OrderHistory* orderHistory); // Returns today's sales data
+float averageRevenuePerWeek(OrderHistory* orderHistory); //returns past 1 weeks sales data
+float averageRevenueInLast30Days(OrderHistory* orderHistory ); // returns past 1 month sales data
+
+void past30DaysData(OrderHistory* orderHistory, int data[30]); // makes changes in data array provided. (as it will also get reflect back to the caller). And return the total revenue
 
 #endif
