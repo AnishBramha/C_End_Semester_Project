@@ -6,14 +6,14 @@
 #include "linked_list.h"
 #include "file_handler.h"
 
-Tables* addTable(long int tableNo, long int capacity, Tables* tables);
+Tables* addNewTable(long int tableNo, long int capacity,Tables* tables);
 // adds a new node to the Tables linked list and returns the head of the new list, calls updateTables()
-Tables* removeTable(long int tableNo, Tables* tables);
+Tables* deleteTable(long int tableNo, Tables* tables);
 // deletes a node from the Tables linked list and returns the head of the new list, calls updateTables()
 
-Menu* addItem(Item* item, Menu* menu);
+Menu* addNewItem(Item* item, Menu* menu);
 // adds a new node to the Menu linked list and returns the head of the new list, calls updateMenu()
-Menu* removeItem(Item* item);
+Menu* deleteItem(long long int itemID,Menu* menu);
 // deletes a node from the Menu linked list and returns the head of the new list, calls updateMenu()
 Menu* updatePrice(long long int itemID, float newPrice, Menu* menu);
 // searches for item ID in the Menu linked list, changes the price and returns the head of the new list, calls updateMenu()
