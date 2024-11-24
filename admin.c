@@ -77,3 +77,59 @@ Menu* updatePrice(long long int itemID, float newPrice, Menu* menu){
     temp->item.price=newPrice;
     return menu;
 }
+// Function to mark an order as complete
+CurrentOrders* markAsComplete(long long int orderID, CurrentOrders* currentOrders, OrderHistory* history, Tables* tables) {
+    CurrentOrders *prev = NULL, *current = currentOrders;
+
+    // Traverse the currentOrders list to find the order by orderID
+    while (current != NULL) {
+        if (current->order.orderID == orderID) {
+            // Move the order to history
+            OrderHistory *newHistoryEntry = newEntry(&(current->order));
+            history = addEntry(newHistoryEntry, history);
+
+            // Remove the order from currentOrders
+            if (prev == NULL) {
+                // If it's the first element
+                currentOrders = current->next;
+            } else {
+                prev->next = current->next;
+            }
+
+            // Unreserve the table
+            tables = unreserveTable(current->order.tableNo, tables);
+
+            // Update history and current orders (assuming these functions are implemented)
+            updateHistory(history);
+            updateCurrentOrders(currentOrders);
+
+            // Free the current node
+            free(current);
+            break;
+        }
+        prev = current;
+        current = current->next;
+    }
+    return currentOrders;
+}
+
+// Function to unreserve a table
+Tables* unreserveTable(int tableNo, Tables* tables) {
+    Tables* current = tables;
+
+    // Traverse the tables list to find the table by tableNo
+    while (current != NULL) {
+        if (current->table.tableNo == tableNo) {
+            // Mark the table as available
+            current->table.available = 1;
+
+            // Update tables (assuming this function is implemented)
+            updateTables(tables);
+
+            break;
+        }
+        current = current->next;
+    }
+    return tables;
+}
+
