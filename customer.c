@@ -9,7 +9,7 @@ Table reserve;
 Order new_Order={0};
 // LONG LONG
 CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrders* currentOrders, OrderHistory* orderHistory, long long int* orderID, Tables* tables){
-    
+    logAction("customer.c","createOrder");
     *orderID=lenCurrentOrders(currentOrders)+lenOrderHistory(orderHistory)+1;
     char* time,*date;
 
@@ -68,6 +68,7 @@ CurrentOrders* createOrder(char name[100], char phone[11],int people, CurrentOrd
 }
 
 Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentOrders* currentOrders, long int* futureTableNo){
+    logAction("customer.c","reserveTable");
     Tables* tempTable=tables;
     int restaurant_full=0;
     int already_reserved_flag=0;
@@ -97,6 +98,7 @@ Tables* reserveTable(long long int orderID, int people, Tables* tables, CurrentO
 }
 
 CurrentOrders* makeOrder(long long int itemID, CurrentOrders* currentOrders, long long int orderID){
+    logAction("customer.c","makeOrder");
     CurrentOrders* temp=currentOrders;
     while(temp!=NULL){
           if(temp->order.orderID==orderID){
