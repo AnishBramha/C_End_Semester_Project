@@ -116,7 +116,7 @@ float totalRevenue(char* startDate, char* endDate, OrderHistory* orderHistory, i
   while(iter != NULL)
   {
     order = iter->order;
-    if(compdate(startDate,order.orderDate)==1||compdate(startDate,order.orderDate)==0){
+    if(compdate(order.orderDate,startDate)==-1||compdate(startDate,order.orderDate)==0){
       if(compdate(endDate,order.orderDate)==-1||compdate(endDate,order.orderDate)==0){
         rev += order.amount;
         (*totalOrders)++;
