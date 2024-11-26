@@ -112,7 +112,7 @@ Menu* removeItem(long long int itemID, Menu* menu) {
         exit(EMPTY_LIST);
     }
 
-    if (menu->item.itemID == itemID) {
+    if (menu->item.itemID%10000 == itemID) {
 
         Menu* itemToRemove = menu;
         menu = menu->next;
@@ -122,7 +122,7 @@ Menu* removeItem(long long int itemID, Menu* menu) {
     }
 
     Menu* temp = menu;
-    while (temp->next && temp->next->item.itemID != itemID)
+    while (temp->next && temp->next->item.itemID%10000 != itemID)
         temp = temp->next;
 
     if (!temp->next) {
