@@ -118,6 +118,10 @@ void printMenu(HEADS){
         char Sveg[2]={veg-48,'\0'};
         char Sno[5]={((itemNo/1000))+48,((itemNo/100)%10)+48,((itemNo/10)%100)+48,(itemNo%10)+48,'\0'};
 
+        if(type==0){
+            menuRow(item.name,Sno,Sspice,"NIL",item.allergens,Sprice,veg);
+        }
+        
         if(type==1){
             menuRow(item.name,Sno,Sspice,"Starter",item.allergens,Sprice,veg);
         }
