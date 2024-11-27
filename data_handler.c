@@ -137,7 +137,7 @@ Menu* searchAllergens(char* allergen, Menu* menu){
     strcpy(item.name,tempstr);
     toLower(tempstr);
 
-    char* flag = strstr(tempstr,allergen);
+    char flag = strstr(tempstr,allergen);
     if(flag == NULL)
     {
       struct Menu* newlink = newItem(&item);
