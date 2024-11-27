@@ -134,7 +134,7 @@ Menu* searchAllergens(char* allergen, Menu* menu){
   {
     item = iter->item;
     char* tempstr[100];
-    strcpy(item.name,tempstr);
+    strcpy(tempstr,item.allergen);
     toLower(tempstr);
 
     char flag = strstr(tempstr,allergen);
