@@ -1,4 +1,5 @@
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -125,6 +126,28 @@ Menu* searchItemPrice(float min, float max, Menu* menu){
 }
 
 
+
+// Menu* searchAllergens(char* allergen, Menu* menu){
+//   struct Menu* outlist = NULL;
+//   struct Menu* iter = menu;
+//   struct Item item;
+//   while(iter != NULL)
+//   {
+//     item = iter->item;
+//     char* flag = strstr(item.allergens,allergen);
+//     if(flag == NULL)
+//     {
+//       struct Menu* newlink = newItem(&item);
+//       outlist = addItem(newlink,outlist);
+//     }
+//     iter = iter->next;
+//   }
+//   return outlist;
+// }
+
+
+
+
 Menu* searchAllergens(char* allergen, Menu* menu){
   struct Menu* outlist = NULL;
   struct Menu* iter = menu;
@@ -133,11 +156,11 @@ Menu* searchAllergens(char* allergen, Menu* menu){
   while(iter != NULL)
   {
     item = iter->item;
-    char* tempstr[100];
-    strcpy(tempstr,item.allergen);
+    char tempstr[100];
+    strcpy(tempstr,item.allergens);
     toLower(tempstr);
 
-    char flag = strstr(tempstr,allergen);
+    char* flag = strstr(tempstr,allergen);
     if(flag == NULL)
     {
       struct Menu* newlink = newItem(&item);
@@ -308,6 +331,6 @@ float todaysSalesData(OrderHistory* orderHistory, int* totalOrders) {
 
 void toLower(char* str) {
     for (int i = 0; str[i] != '\0'; i++) {
-        str[i] = tolower((unsigned char)str[i]);
+        str[i] = tolower(str[i]);
     }
 }
