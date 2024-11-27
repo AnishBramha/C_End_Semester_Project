@@ -1,8 +1,9 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <file_handler.h>
-#include <admin.h>
-#include <linked_list.h>
+#include "file_handler.h"
+#include "admin.h"
+#include "linked_list.h"
 
 #define EMPTY_LIST -4
 #define STR_EMPTY_LIST fprintf(stderr, "\a\nFATAL ERROR! EMPTY LIST!\n\n")
@@ -26,12 +27,14 @@ Tables* addNewTable(long int tableNo,long int capacity, Tables* tables)
         newest = newTable(&new_table);
         
         tables=addTable(newest,tables);
+        updateTables(tables);
         return tables;
     }
 
 Tables* deleteTable(long int tableNo, Tables* tables) {
 
     tables=removeTable(tableNo,tables);
+    updateTables(tables);
     return tables;
 }
 
@@ -42,6 +45,7 @@ Menu* addNewItem(Item* item, Menu* menu) {
     newDish=newItem(item);
 
     menu=addItem(newDish,menu);
+    updateMenu(menu);
     return menu;
 }
 
@@ -50,6 +54,7 @@ Menu* deleteItem(long long int itemID,Menu* menu) {
     logAction("admin.c", "removeItem");
 
     menu=removeItem(itemID,menu);
+    updateMenu(menu);
     return menu;
 }
 
@@ -65,6 +70,7 @@ Menu* updatePrice(long long int itemID, float newPrice, Menu* menu){
     if (menu->item.itemID==itemID){
         menu->item.price=newPrice;
         //printf("Price Updated!");
+        updateMenu(menu);
         return menu;
     }
 
@@ -75,9 +81,16 @@ Menu* updatePrice(long long int itemID, float newPrice, Menu* menu){
         temp = temp->next;
 
     temp->item.price=newPrice;
+    updateMenu(menu);
     return menu;
 }
-// Function to mark an order as complete
+
+
+
+
+// NEW
+
+
 CurrentOrders* markAsComplete(long long int orderID, CurrentOrders* currentOrders, OrderHistory* history, Tables* tables) {
     CurrentOrders *prev = NULL, *current = currentOrders;
 
@@ -100,7 +113,7 @@ CurrentOrders* markAsComplete(long long int orderID, CurrentOrders* currentOrder
             tables = unreserveTable(current->order.tableNo, tables);
 
             // Update history and current orders (assuming these functions are implemented)
-            updateHistory(history);
+            updateOrderHistory(history);
             updateCurrentOrders(currentOrders);
 
             // Free the current node
@@ -132,4 +145,3 @@ Tables* unreserveTable(int tableNo, Tables* tables) {
     }
     return tables;
 }
-
