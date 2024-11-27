@@ -40,7 +40,7 @@ char* getTime(void) {
     struct tm* ctime = localtime(&t);
 
     static char strtime[6];
-    snprintf(strtime, sizeof(strtime) * 100, "%02d:%02d", ctime->tm_hour, ctime->tm_min);
+    snprintf(strtime, sizeof(strtime) * 10, "%02d:%02d", ctime->tm_hour, ctime->tm_min);
 
     // logAction("linked_list.c", "getTime");
     return strtime;
@@ -52,23 +52,13 @@ char* getDate(void) {
     struct tm* ctime = localtime(&t);
 
     static char strdate[9];
-    snprintf(strdate, sizeof(strdate) * 100, "%02d-%02d-%02d", ctime->tm_mday, ctime->tm_mon + 1, ctime->tm_year % 100);
+    snprintf(strdate, sizeof(strdate) * 10, "%02d-%02d-%02d", ctime->tm_mday, ctime->tm_mon + 1, ctime->tm_year % 100);
 
     // logAction("linked_list.c", "getDate");
     return strdate;
 }
 
 
-// ************************************************
-
-int main(void) {
-
-    OrderHistory* o = loadOrderHistory();
-
-    formatOrderHistory(o);
-
-    deleteOrderHistory(o);
-}
 
 // ************************************************
 
@@ -713,31 +703,31 @@ void testOrderHistory(void) {
 
     logAction("linked_list.c", "testOrderHistory");
 
-    // Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
-    // strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
-    // strncpy(a.orderDate, getDate(), sizeof(a.orderDate));
+    Order a = {1, "a", "1", 1, 1, {1,2,3}, .amount = 0};
+    strncpy(a.orderTime, getTime(), sizeof(a.orderTime));
+    strncpy(a.orderDate, getDate(), sizeof(a.orderDate));
 
-    // Order b = {2, "b", "2", 2, 2, {4,5,6}, .amount = 0};
-    // strncpy(b.orderTime, getTime(), sizeof(b.orderTime));
-    // strncpy(b.orderDate, getDate(), sizeof(b.orderDate));
+    Order b = {2, "b", "2", 2, 2, {4,5,6}, .amount = 0};
+    strncpy(b.orderTime, getTime(), sizeof(b.orderTime));
+    strncpy(b.orderDate, getDate(), sizeof(b.orderDate));
 
-    // Order c = {3, "c", "3", 3, 3, {7,8,9}, .amount = 0};
-    // strncpy(c.orderTime, getTime(), sizeof(c.orderTime));
-    // strncpy(c.orderDate, getDate(), sizeof(c.orderDate));
+    Order c = {3, "c", "3", 3, 3, {7,8,9}, .amount = 0};
+    strncpy(c.orderTime, getTime(), sizeof(c.orderTime));
+    strncpy(c.orderDate, getDate(), sizeof(c.orderDate));
 
     OrderHistory* oh = NULL;
     formatOrderHistory(oh);
 
-    // oh = addEntry(newEntry(&a), oh);
-    // formatOrderHistory(oh);
+    oh = addEntry(newEntry(&a), oh);
+    formatOrderHistory(oh);
 
-    // oh = addEntry(newEntry(&b), oh);
-    // formatOrderHistory(oh);
+    oh = addEntry(newEntry(&b), oh);
+    formatOrderHistory(oh);
 
-    // oh = addEntry(newEntry(&c), oh);
-    // formatOrderHistory(oh);
+    oh = addEntry(newEntry(&c), oh);
+    formatOrderHistory(oh);
 
-    // deleteOrderHistory(oh);
+    deleteOrderHistory(oh);
 
     return;    
 }
